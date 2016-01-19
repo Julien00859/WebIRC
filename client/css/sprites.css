@@ -1,8 +1,8 @@
 .sprites {
 	display: inline-block;
-	width: 20px;
-	height: 20px;
-	background-image: url("..\img\smiley.png");
+	width: 18px;
+	height: 18px;
+	background-image: url("../img/smiley.png");
 }
 
 .sprites[name=":)"] {background-position: 0 0;}
