@@ -1,68 +1,51 @@
 // Importation des dépendances
 const fs = require("fs");
-const http = require("http");
-const io = require("socket.io")(http);
 const pathlib = require("path");
-const urllib = require("url");
-const net = require("net")
+const net = require("net");
+const express = require("express")
+const app = express(http)
+const http = require("http").Server(app);
+const socketio = require("socket.io")(http);
 
 // Récupération de la configuration
 const config = JSON.parse(fs.readFileSync(pathlib.join(process.cwd(), "config.json"), "utf8"));
 
-// Fait la liste des extensions disponible et les lie à leur header html
-const availableExtensions = {
-    ".html":"text/html",
-    ".css":"text/css",
-    ".txt":"text/plain",
-    ".js":"text/javascript",
-    ".json":"text/plain"
-};
+// Définition de la racine
+app.use(express.static("../client/"));
 
-// Récupération du dossier client statique, remonte d'un dossier à la hard et entre dans le dossier client à la hard
-const clientPath = pathlib.join(process.cwd().slice(0, process.cwd().lastIndexOf(pathlib.sep)), "client")
+// Lancement du serveur web
+http.listen(config.nodePort, function(){
+    console.log("Server running on localhost:" + config.nodePort + "\n");
+});
 
-http.createServer(function(req, res){
-    var uri = pathlib.join(clientPath, urllib.parse(req.url).pathname); // Récupère le fichier ciblé par l'URL et ajoute le path en préfix
-    var ext = pathlib.extname(uri); // Récupère l'extention du fichier
+socketio.on("connection", function(socket){
+    console.log("User connected");
+    socket.irc = {};
 
-    console.log("Access to " + uri);
+    socket.on("register", function(nickname, password) {
+        socket.irc.server = new net.Socket();
+        socket.irc.registred = false;
 
-    if (fs.statSync(uri).isDirectory()) { // Si il s'avère que c'était un répertoire
-        uri = pathlib.join(uri, "index.html"); // On récupère le index.html de ce répertoire
-        ext = ".html"; // On met l'extention sur .html
-    }
+        console.log("Connecting new client to IRC")
+        socket.irc.server.connect(config.IRCPort, config.IRCHost, function(){
+            console.log("Connected, sending pass nick and user commands")
+            if (password) socket.irc.server.write("PASS " + password + "\r\n");
+            socket.irc.server.write("NICK " + nickname + "\r\n");
+            socket.irc.server.write("USER WebIRC 0 * :" + socket.handshake.address.address + "\r\n");
+        });
 
-    fs.access(uri, fs.R_OK, function(err){ // Tente d'accéder au fichier en lecture
-        if (!err) { // Si le fichier est accessible
-            if (ext in availableExtensions) {  // et d'extention connue
-                fs.readFile(uri, "utf-8", function(err, data) { // On essaie de l'ouvrir en format unicode
-                    if (!err) { // Si pas d'erreur, on l'envoie
-                        res.writeHead(200, {"Content-type": availableExtensions[ext]});
-                        res.write(data);
-                        res.end();
-                    } else { // Sinon on renvoie une erreur 500
-                        res.writeHead(500, {"Content-type": "text/plain"});
-                        res.end("500 - Internal error");
-                    }
-                });
-            } else { // mais d'extention inconnue
-                fs.readFile(uri, "binary", function(err, data) { // On essaie de l'ouvrir en format binaire
-                    if (!err) { // Si pas d'erreur on l'envoie
-                        res.writeHead(200, {"Content-type": "binary"});
-                        res.write(data, "binary");
-                    } else { // Sinon on renvoie une erreur 500
-                        res.writeHead(500, {"Content-type": "text/plain"});
-                        res.end("500 - Internal error");
-                    }
-                });
-            }
-        } else { // Si le fichier est introuvable on renvoie une erreur 404
-            res.writeHead(404, {"Content-type": "text/plain"});
-            res.end("404 - Page not found");
-        }
+        socket.irc.server.on("data", function(buffer){
+            msg = new String(buffer).valueOf()
+            console.log(msg);
+            socket.emit("IRCMessage", msg);
+        });
+
+        socket.on("command", function(cmd){
+            socket.irc.server.write(cmd + "\r\n")
+        });
+        socket.on('disconnect', function(){
+            console.log('user disconnected');
+            socket.irc.server.end("QUIT :Page closed");
+        });
     });
-}).listen(config.nodePort); // Écoute sur le port 8080
-
-console.log("Server path: " + process.cwd());
-console.log("Client path: " + clientPath);
-console.log("Server running on localhost:" + config.nodePort + "\n");
+});
