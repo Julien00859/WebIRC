@@ -4,9 +4,13 @@ const http = require("http");
 const io = require("socket.io")(http);
 const pathlib = require("path");
 const urllib = require("url");
+const net = require("net")
+
+// Récupération de la configuration
+const config = JSON.parse(fs.readFileSync(pathlib.join(process.cwd(), "config.json"), "utf8"));
 
 // Fait la liste des extensions disponible et les lie à leur header html
-const availableExtension = {
+const availableExtensions = {
     ".html":"text/html",
     ".css":"text/css",
     ".txt":"text/plain",
@@ -30,10 +34,10 @@ http.createServer(function(req, res){
 
     fs.access(uri, fs.R_OK, function(err){ // Tente d'accéder au fichier en lecture
         if (!err) { // Si le fichier est accessible
-            if (ext in availableExtension) {  // et d'extention connue
+            if (ext in availableExtensions) {  // et d'extention connue
                 fs.readFile(uri, "utf-8", function(err, data) { // On essaie de l'ouvrir en format unicode
                     if (!err) { // Si pas d'erreur, on l'envoie
-                        res.writeHead(200, {"Content-type": availableExtension[ext]});
+                        res.writeHead(200, {"Content-type": availableExtensions[ext]});
                         res.write(data);
                         res.end();
                     } else { // Sinon on renvoie une erreur 500
@@ -57,8 +61,8 @@ http.createServer(function(req, res){
             res.end("404 - Page not found");
         }
     });
-}).listen(8080); // Écoute sur le port 8080
+}).listen(config.nodePort); // Écoute sur le port 8080
 
 console.log("Server path: " + process.cwd());
 console.log("Client path: " + clientPath);
-console.log("Server running on localhost:8080\n");
+console.log("Server running on localhost:" + config.nodePort + "\n");
