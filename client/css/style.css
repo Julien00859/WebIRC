@@ -1,0 +1,50 @@
+* {
+  font-family: Roboto;
+  font-size: 1em;
+}
+body {
+  width: 700px;
+  height: 1200px;
+  box-shadow: 5px;
+  padding: 0 1em 1em 1em;
+  border: double black;
+  background-color: #ecf0f1;
+}
+h1 {
+  font-size: 1.5em;
+}
+section {
+  border: 1px solid black;
+  width: 100%;
+  height: 800px;
+  margin-bottom: 5px;
+  overflow: auto;
+}
+.message {
+  padding: 1em 0;
+}
+textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+}
+textarea:focus {
+  border: 2px solid #3498db;
+}
+#Envoyer {
+  /*border-radius: 2px;
+  cursor: pointer;*/
+  float: right;
+  clear: both;
+}
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}
+p {
+  margin: 8px auto;
+}
+fieldset {
+  border: none;
+}
