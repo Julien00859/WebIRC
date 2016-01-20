@@ -25,8 +25,24 @@
         <script src="js/IRC.js"></script>
     </head>
     <body>
-        <h1>Client IRC</h1>
-        <section>
+        <h1>Client IRC</h1><span id="titre">// Salons : .... | 20/01/2016 : 17:00</span>
+        <section class="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
+            <ul> <!-- Sous forme de liste -->
+              <li>
+                <div class="message-data left"> <!-- Infos utiles -->
+                  <span class="user">Mathieu</span> <!-- User -->
+                  <span class="date">17:00, Today</span> <!-- Date -->
+                </div>
+                <div class="message-l">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultricies, enim id sagittis volutpat, mi nibh commodo leo</div><!-- Message en tant que tel -->
+              </li>
+              <li>
+                <div class="message-data right"> <!-- Infos utiles -->
+                  <span class="date">17:01, Today</span> <!-- Date -->
+                  <span class="user">Julien</span> <!-- User -->
+                </div>
+                <div class="message-r">Aliquam feugiat massa non velit viverra aliquam. Quisque mauris sapien, semper eget vehicula in, consectetur sit amet nisl.</div><!-- Message en tant que tel -->
+              </li>
+            </ul>
             <!-- Smileys -->
             <table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
                 <caption>Liste des smileys disponible</caption>
@@ -134,7 +150,7 @@
                     <td class="sprites" name="(poolparty)"></td>
                 </tr>
             </table>
-        </section>
+        </section><!-- Fin de l'exemple -->
         <!-- Formulaire contenant tout les camps d'identifications,... / Affiche le champ permettant d'écrire un message lors du click sur "Go" -->
         <form action="#" ng-submit="showTextField()" ng-hide="showForm" name=frm1 id="config" ng-controller="fieldsController as fields">
             <fieldset class="fields">
@@ -156,11 +172,11 @@
                 </p>
                 <p>
                     <label for=joinCommand>Auto-Join-Command : </label>
-                    <textarea rows="4" id=joinCommand name="joinCommand" ng-model="user.joinCommand"></textarea>
+                    <textarea rows="4" id=joinCommand name="joinCommand" ng-model="user.joinCommand" placeholder="Entrez la liste des salons que vous désirez rejoindre"></textarea>
                 </p>
                 <p>
                     <label for=joinChannel>Auto-Join-Channel : </label>
-                    <textarea rows="4" id=joinChannel name=joinChannel ng-model="joinChannel"></textarea>
+                    <textarea rows="4" id=joinChannel name=joinChannel ng-model="joinChannel" placeholder="Entrez la liste des commandes"></textarea>
                 </p>
                 <p>{{user}}</p> <!-- Vérifie que les champs devraient s'ajouter dans un tableau sous la bonne forme et bonne syntaxe / A enlever par après -->
                 <input type=submit value="Go">
@@ -168,7 +184,7 @@
         </form>
         <!-- Champs pour écrire le message et l'envoyer / Caché par défaut -->
         <form action="#" ng-submit="sendText()" ng-show="showTypeMsg">
-            <fieldset class="message">
+            <fieldset class="inputText">
                 <textarea rows="4" placeholder="Entrez votre message ici..." required></textarea>
                 <input type="submit" id=Envoyer value="Envoyer">
             </fieldset>
