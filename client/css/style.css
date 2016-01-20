@@ -4,43 +4,91 @@
 }
 body {
   width: 700px;
-  height: 1200px;
+  height: 1300px;
   box-shadow: 5px;
   padding: 0 1em 1em 1em;
   border: double black;
-  background-color: #ecf0f1;
+  color: white;
+  background-color: #F2F5F8;
 }
 h1 {
   font-size: 1.5em;
+  font-family: Lato;
+  color: #2c3e50;
+  width: 120px;
+  display: inline-block;
+}
+#titre {
+  display: inline-block;
+  color: lightgray;
+  font-family: Oswald;
 }
 section {
-  border: 1px solid black;
-  width: 100%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
   height: 800px;
+  padding: 20px;
   margin-bottom: 5px;
   overflow: auto;
 }
-.message {
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+.left {
+  text-align: left;
+
+}
+.right {
+  text-align: right;
+}
+.date {
+  color: lightgray;
+}
+.user {
+  color: #34495e;
+}
+.message-l {
+  background-color: #27ae60;
+}
+.message-r {
+  background-color: #2980b9;
+  float: right;
+}
+.message-l, .message-r {
+  padding : 12px 15px;
+  margin-top: 10px;
+  line-height: 25px;
+  border-radius: 5px;
+  margin-bottom: 30px;
+  width: 85%;
+}
+.inputText {
   padding: 1em 0;
+}
+input[type=text], input[type=password], textarea {
+  border-radius: 5px;
+  border: none;
 }
 textarea {
   width: 100%;
-  border: 1px solid #ccc;
 }
-textarea:focus {
-  border: 2px solid #3498db;
+label {
+  color: #92959E;
+}
+input[type=submit] {
+  color: #94C2ED;
+  font-size: 20px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+input[type=submit]:hover {
+  color: #2980b9;
 }
 #Envoyer {
-  /*border-radius: 2px;
-  cursor: pointer;*/
   float: right;
   clear: both;
-}
-.hide {
-  display: none;
-}
-.show {
-  display: block;
 }
 p {
   margin: 8px auto;
