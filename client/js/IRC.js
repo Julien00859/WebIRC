@@ -1,4 +1,4 @@
-var IRC = function IRC(nickname, password, channels, commands, callback) {
+var IRC = function IRC(nickname, password, channels, commands) {
     // Varable d'instance
     var self = this;
     self.socket = io();
@@ -64,6 +64,20 @@ var IRC = function IRC(nickname, password, channels, commands, callback) {
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2];
                             var msg = linex.slice(3).join(" ").slice(1);
+                            break;
+                        case "JOIN":
+                            break;
+
+                        case "KICK":
+                            break;
+
+                        case "PART":
+                            break;
+
+                        case "QUIT":
+                            break;
+
+                        case "MODE":
                             break;
                     }
                 }

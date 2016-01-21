@@ -43,10 +43,10 @@ socketio.on("connection", function(socket){
                 var channel = msg.split("\r\n")[1].split(" ")[3];
 
                 if (channel in socket.irc.callbacks[socket.irc.query]) {
-                     socket.emit("names", msg, socket.irc.callbacks[socket.irc.query][channel]);
+                     socket.emit(socket.irc.query, msg, socket.irc.callbacks[socket.irc.query][channel]);
                      delete socket.irc.callbacks[socket.irc.query][channel]
                 }
-                else socket.emit("names", msg);
+                else socket.emit(socket.irc.query, msg);
 
                 socket.irc.query = "";
 
