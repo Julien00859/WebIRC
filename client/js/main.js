@@ -15,10 +15,31 @@ chatIrc.controller("fieldsController", function($scope) {
       command: $scope.user.joinChannel
     });
     //console.log($scope.infos);
-    $scope.showForm = true; // Lors de l'envoi du 1er form, on le cache et n affiche le second formulaire
+    $scope.showForm = true; // Lors de l'envoi du 1er form, on le cache et on affiche le second formulaire
     event.preventDefault(); // Bloque l'envoi du formulaire
   };
   $scope.sendText = function(event) { // Fonction lors de l'envoi du formulaire de message
+    this.on("join", function(sender, channel, message) { // User rejoint le salon
+      
+    });
+    this.on("publicMessage", function(sender, channel, message) { // User envoi un message public (sur le salon)
+
+    });
+    this.on("privateMessage" function(sender, channel, message) { // User envoi un message privé
+
+    });
+    this.on("kick", function(sender, channel, message) { // User est banni du salon
+
+    });
+    this.on("part", function(sender, channel, message) { // User quitte le salon
+
+    });
+    this.on("quit", function(sender, channel, message) { // User quitte le serveur
+
+    });
+    this.on("mode", function(sender, channel, message) { // User change de mode (ex: passe Admin)
+
+    });
     event.preventDefault(); // Bloque l'envoi du formulaire
   }
 });
