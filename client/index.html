@@ -24,7 +24,7 @@
         <script src="js/main.js" type="text/javascript"></script>
         <script src="js/IRC.js"></script>
     </head>
-    <body>
+    <body ng-controller="fieldsController as fields">
         <h1>Client IRC</h1><span id="titre">// Salons : .... | 20/01/2016 : 17:00</span>
         <section class="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
             <ul> <!-- Sous forme de liste -->
@@ -152,7 +152,7 @@
             </table>
         </section><!-- Fin de l'exemple -->
         <!-- Formulaire contenant tout les camps d'identifications,... / Affiche le champ permettant d'écrire un message lors du click sur "Go" -->
-        <form action="#" ng-submit="showTextField()" ng-hide="showForm" name=frm1 id="config" ng-controller="fieldsController as fields">
+        <form action="" ng-submit="showTextField($event)" ng-hide="showForm" name=frm1 id="config">
             <fieldset class="fields">
                 <p>
                     <label for=nickname>Nickname :</label>
@@ -176,14 +176,13 @@
                 </p>
                 <p>
                     <label for=joinChannel>Auto-Join-Channel : </label>
-                    <textarea rows="4" id=joinChannel name=joinChannel ng-model="joinChannel" placeholder="Entrez la liste des commandes"></textarea>
+                    <textarea rows="4" id=joinChannel name=joinChannel ng-model="user.joinChannel" placeholder="Entrez la liste des commandes"></textarea>
                 </p>
-                <p>{{user}}</p> <!-- Vérifie que les champs devraient s'ajouter dans un tableau sous la bonne forme et bonne syntaxe / A enlever par après -->
                 <input type=submit value="Go">
             </fieldset>
         </form>
         <!-- Champs pour écrire le message et l'envoyer / Caché par défaut -->
-        <form action="#" ng-submit="sendText()" ng-show="showTypeMsg">
+        <form action="" ng-submit="sendText($event)" ng-show="showForm">
             <fieldset class="inputText">
                 <textarea rows="4" placeholder="Entrez votre message ici..." required></textarea>
                 <input type="submit" id=Envoyer value="Envoyer">
