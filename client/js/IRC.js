@@ -65,19 +65,45 @@ var IRC = function IRC(nickname, password, channels, commands) {
                             var channel = linex[2];
                             var msg = linex.slice(3).join(" ").slice(1);
                             break;
+
                         case "JOIN":
+                            // :Julien00859!Julien@host-85-201-171-39.dynamic.voo.be JOIN :#Dev
+                            //  ^^^^^^^^^^^                                                ^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var channel = linex[2].slice(1);
                             break;
 
                         case "KICK":
+                            // :Julien008!Julien@host-85-201-171-39.dynamic.voo.be KICK #Dev Julien00859 :You have been kicked
+                            //  ^^^^^^^^^                                               ^^^^ ^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var channel = linex[2];
+                            var target = linex[3];
+                            var kickMessage = linex.slice(4).join(" ").slice(1);
                             break;
 
                         case "PART":
+                            // :Julien00859!Julien@host-85-201-171-39.dynamic.voo.be PART #Dev :"Gonna bake some cookies..."
+                            //  ^^^^^^^^^^^                                               ^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var channel = linex[2];
+                            var partMessage = linex.slice(3).join(" ").slice(1);
                             break;
 
                         case "QUIT":
+                            // :Julien00859!Julien@host-85-201-171-39.dynamic.voo.be QUIT :Quit: Keep calm and do not rage quit
+                            //  ^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var quitMessage = linex.slice(3).join(" ");
                             break;
 
                         case "MODE":
+                            // :Julien008!Julien@host-85-201-171-39.dynamic.voo.be MODE #Dev +h Julien00859
+                            //  ^^^^^^^^^                                               ^^^^ ^^ ^^^^^^^^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var channel = linex[2];
+                            var mode = linex[3];
+                            var target = linex[4];
                             break;
                     }
                 }
