@@ -11,7 +11,7 @@ chatIrc.controller("fieldsController", function($scope) {
       username: $scope.user.username,
       realname: $scope.user.realname,
       password: $scope.user.password,
-      saloon: $scope.user.joinCommand,
+      channel: $scope.user.joinCommand,
       command: $scope.user.joinChannel
     });
     //console.log($scope.infos);
@@ -19,8 +19,18 @@ chatIrc.controller("fieldsController", function($scope) {
     event.preventDefault(); // Bloque l'envoi du formulaire
   };
   $scope.sendText = function(event) { // Fonction lors de l'envoi du formulaire de message
+    var user1 = $scope.infos[0];
+    IRC.sendCommand(user1.command);
+    IRC.sendMessage(user1.channel || user1.nickname, $scope.user.message);
+    IRC.sendNamesQuery(user1.channel, function(names) {
+      console.log(names.join(" "));
+    });
+    IRC.sendTopicQuery(user1.channel, function(topic) {
+      console.log(topic.join(" "));
+    });
+
     this.on("join", function(sender, channel, message) { // User rejoint le salon
-      
+
     });
     this.on("publicMessage", function(sender, channel, message) { // User envoi un message public (sur le salon)
 
