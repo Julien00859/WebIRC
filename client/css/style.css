@@ -3,12 +3,16 @@
   font-size: 1em;
 }
 body {
-  max-width: 700px;
+  max-width: 1105px;
   max-height: 1350px;
+  margin: 0 auto;
+}
+.ircChat {
+  box-sizing: border-box;
+  width: 700px;
   box-shadow: 5px;
   padding: 0 1em 1em 1em;
   margin: 0 auto;
-  border: double black;
   color: white;
   background-color: #F2F5F8;
 }
@@ -96,4 +100,24 @@ p {
 }
 fieldset {
   border: none;
+}
+aside {
+  box-sizing: border-box;
+  margin: 0;
+  width: 305px;
+  height: 1350px;
+  background-color: #354b60;
+  border: none;
+  display: inline-block;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  text-align: center;
+}
+#titreAside {
+  color: white;
+  margin: 16.080px 0;
+}
+#userConnected {
+  border-top: 1px solid white;
 }
