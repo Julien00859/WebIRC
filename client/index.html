@@ -23,11 +23,12 @@
         <!-- Nos scripts -->
         <script src="js/main.js" type="text/javascript"></script>
         <script src="js/IRC.js"></script>
+
     </head>
-    <body ng-controller="fieldsController as fields">
+    <body ng-controller="fieldsController as fields" ng-init="initPage()">
         <div class="ircChat">
-            <h1>Client IRC</h1><span id="titre">// <span ng-show="showChl">Salons : {{infos[0].channel}} |</span> 20/01/2016 : 17:00</span>
-            <section class="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
+            <h1>Client IRC</h1><span id="titre">// <span ng-show="showChl">Salons : {{infos[0].channel}} | </span><span id="date"></span></span><!-- On affiche le titre, le(s) salon(s), la date et l'heure -->
+            <section id="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
                 <ul> <!-- Sous forme de liste -->
                   <li>
                     <div class="message-data left"> <!-- Infos utiles -->
@@ -190,11 +191,12 @@
                 </fieldset>
             </form>
         </div>
+        <!-- Panel indiquant les utilisateurs connectés sur le salon -->
         <aside>
           <h1 id="titreAside">Connecté(s)</h1>
           <section id="userConnected">
-            <ul>
-              <li ng-repeat="user in infos"></li>
+            <ul class="Everyone" ng-repeat="name in nm">
+              <li><span>User : {{name}}</span><span ng-model="tp"> | Channel : {{tp.join(" ")}}</span></li>
             </ul>
           </section>
         </aside>
