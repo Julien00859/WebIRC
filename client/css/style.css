@@ -6,6 +6,7 @@ body {
   max-width: 1105px;
   max-height: 1350px;
   margin: 0 auto;
+  display: inline-flex;
 }
 .ircChat {
   box-sizing: border-box;
@@ -13,7 +14,6 @@ body {
   box-shadow: 5px;
   padding: 0 1em 1em 1em;
   margin: 0 auto;
-  float: left;
   color: white;
   background-color: #F2F5F8;
 }
@@ -106,9 +106,7 @@ aside {
   box-sizing: border-box;
   margin: 0;
   width: 305px;
-  height: 1350px;
   background-color: #354b60;
-  float: left;
   text-align: center;
 }
 #titreAside {
