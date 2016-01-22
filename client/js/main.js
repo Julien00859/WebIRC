@@ -6,6 +6,20 @@ var chatIrc = angular.module("chatIrc", []);
 chatIrc.controller("fieldsController", function($scope) {
 
   $scope.infos = []; // Tableau vide destiné à recevoir les infos d'indentification de l'user
+  var nm = []; // Tableau de travail (contenant les noms des users connectés)
+  $scope.tp = []; // Tableau de travail (contenant les topics)
+
+  $scope.initPage = function init() { // Affiche l'heure au chargement de la page
+    function getDate() {
+      var fulldate = new Date();
+      var hours = fulldate.getHours();
+      var minutes = fulldate.getMinutes();
+      var date = fulldate.toLocaleDateString();
+      console.log(date + " " + hours + ":" + minutes);
+      $("#date").text(date + " " + hours + ":" + minutes);
+    };
+    setInterval(getDate, 60000); // Heure mis à jour toute les minutes
+  };
 
   $scope.showTextField = function(event, sender, channel) { // Fonction lors de l'envoi du formulaire d'identification
     $scope.infos.push({ // Ajout des infos renseignés par l'user dans le tableau $scope.infos
@@ -18,10 +32,11 @@ chatIrc.controller("fieldsController", function($scope) {
     });
     //console.log($scope.infos);
     $scope.showForm = true; // Lors de l'envoi du 1er form, on le cache et on affiche le second formulaire
-    $scope.showChl = true;
+    $scope.showChl = true; // Affiche dans le titre le(s) salon(s) auquel on s'est connecté
+
 
     var user1 = $scope.infos[0];
-    console.log(user1.channel);
+    //console.log(user1.channel);
 
     event.preventDefault(); // Bloque l'envoi du formulaire
   };
@@ -32,36 +47,17 @@ chatIrc.controller("fieldsController", function($scope) {
 
     IRC.sendCommand(user1.command);
     IRC.sendMessage(user1.channel || user1.nickname, $scope.user.message);
+
     IRC.sendNamesQuery(user1.channel, function(names) {
       console.log(names.join(" "));
+      nm.push(names);
     });
+
     IRC.sendTopicQuery(user1.channel, function(topic) {
       console.log(topic.join(" "));
+      $scope.tp.push(topic);
     });
 
-    linex[1] = "PRIVMSG"
-
-    /*this.on("join", function(sender, channel, message) { // User rejoint le salon
-
-    });
-    this.on("publicMessage", function(sender, channel, message) { // User envoi un message public (sur le salon)
-
-    });
-    this.on("privateMessage", function(sender, channel, message) { // User envoi un message privé
-
-    });
-    this.on("kick", function(sender, channel, message) { // User est banni du salon
-
-    });
-    this.on("part", function(sender, channel, message) { // User quitte le salon
-
-    });
-    this.on("quit", function(sender, channel, message) { // User quitte le serveur
-
-    });
-    this.on("mode", function(sender, channel, message) { // User change de mode (ex: passe Admin)
-
-    });*/
     event.preventDefault(); // Bloque l'envoi du formulaire
   };
 });
