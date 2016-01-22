@@ -25,168 +25,178 @@
         <script src="js/IRC.js"></script>
     </head>
     <body ng-controller="fieldsController as fields">
-        <h1>Client IRC</h1><span id="titre">// Salons : .... | 20/01/2016 : 17:00</span>
-        <section class="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
-            <ul> <!-- Sous forme de liste -->
-              <li>
-                <div class="message-data left"> <!-- Infos utiles -->
-                  <span class="user">Mathieu</span> <!-- User -->
-                  <span class="date">17:00, Today</span> <!-- Date -->
-                </div>
-                <div class="message-l">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultricies, enim id sagittis volutpat, mi nibh commodo leo</div><!-- Message en tant que tel -->
-              </li>
-              <li>
-                <div class="message-data right"> <!-- Infos utiles -->
-                  <span class="date">17:01, Today</span> <!-- Date -->
-                  <span class="user">Julien</span> <!-- User -->
-                </div>
-                <div class="message-r">Aliquam feugiat massa non velit viverra aliquam. Quisque mauris sapien, semper eget vehicula in, consectetur sit amet nisl.</div><!-- Message en tant que tel -->
-              </li>
-            </ul>
-            <!-- Smileys -->
-            <table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
-                <caption>Liste des smileys disponible</caption>
-                <tr>
-                    <td class="sprites" name=":)"></td>
-                    <td class="sprites" name=":("></td>
-                    <td class="sprites" name=":D"></td>
-                    <td class="sprites" name="xD"></td>
-                    <td class="sprites" name="(cool)"></td>
-                    <td class="sprites" name=":o"></td>
-                    <td class="sprites" name=";)"></td>
-                    <td class="sprites" name="(chuckle)"></td>
-                    <td class="sprites" name=":'("></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(fear)"></td>
-                    <td class="sprites" name=":|"></td>
-                    <td class="sprites" name="(kiss)"></td>
-                    <td class="sprites" name=":p"></td>
-                    <td class="sprites" name=":$"></td>
-                    <td class="sprites" name="(wait)"></td>
-                    <td class="sprites" name="(angel)"></td>
-                    <td class="sprites" name=":x"></td>
-                    <td class="sprites" name="(devil)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(wasntme)"></td>
-                    <td class="sprites" name="(party)"></td>
-                    <td class="sprites" name=":@"></td>
-                    <td class="sprites" name="(doh)"></td>
-                    <td class="sprites" name="]:)"></td>
-                    <td class="sprites" name="(yawn)"></td>
-                    <td class="sprites" name="(inlove)"></td>
-                    <td class="sprites" name=":^)"></td>
-                    <td class="sprites" name="(idontcare)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(heidy)"></td>
-                    <td class="sprites" name="<3"></td>
-                    <td class="sprites" name="(star)"></td>
-                    <td class="sprites" name="(handshake)"></td>
-                    <td class="sprites" name="(n)"></td>
-                    <td class="sprites" name="(y)"></td>
-                    <td class="sprites" name="(emo)"></td>
-                    <td class="sprites" name="(clap)"></td>
-                    <td class="sprites" name="(rofl)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(bug)"></td>
-                    <td class="sprites" name="(headbang)"></td>
-                    <td class="sprites" name="(clock)"></td>
-                    <td class="sprites" name="(punch)"></td>
-                    <td class="sprites" name="(drunk)"></td>
-                    <td class="sprites" name="(smartphone)"></td>
-                    <td class="sprites" name="(film)"></td>
-                    <td class="sprites" name="(mail)"></td>
-                    <td class="sprites" name="(brokenheart)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(cake)"></td>
-                    <td class="sprites" name="(music)"></td>
-                    <td class="sprites" name="($)"></td>
-                    <td class="sprites" name="(pizza)"></td>
-                    <td class="sprites" name="(cafe)"></td>
-                    <td class="sprites" name="(sun)"></td>
-                    <td class="sprites" name="(flex)"></td>
-                    <td class="sprites" name="(tmi)"></td>
-                    <td class="sprites" name="(flower)"></td>
-                </tr>
+        <div class="ircChat">
+            <h1>Client IRC</h1><span id="titre">// <span ng-show="showChl">Salons : {{infos[0].channel}} |</span> 20/01/2016 : 17:00</span>
+            <section class="chatbox"> <!-- Lieu et place des messages / Exemple pour voir ce que ça donne -->
+                <ul> <!-- Sous forme de liste -->
+                  <li>
+                    <div class="message-data left"> <!-- Infos utiles -->
+                      <span class="user">Mathieu</span> <!-- User -->
+                      <span class="date">17:00, Today</span> <!-- Date -->
+                    </div>
+                    <div class="message-l">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque ultricies, enim id sagittis volutpat, mi nibh commodo leo</div><!-- Message en tant que tel -->
+                  </li>
+                  <li>
+                    <div class="message-data right"> <!-- Infos utiles -->
+                      <span class="date">17:01, Today</span> <!-- Date -->
+                      <span class="user">Julien</span> <!-- User -->
+                    </div>
+                    <div class="message-r">Aliquam feugiat massa non velit viverra aliquam. Quisque mauris sapien, semper eget vehicula in, consectetur sit amet nisl.</div><!-- Message en tant que tel -->
+                  </li>
+                </ul>
+                <!-- Smileys -->
+                <table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
+                    <caption>Liste des smileys disponible</caption>
                     <tr>
-                    <td class="sprites" name="(skome)"></td>
-                    <td class="sprites" name="(rain)"></td>
-                    <td class="sprites" name="(whew)"></td>
-                    <td class="sprites" name="(shake)"></td>
-                    <td class="sprites" name="(bow)"></td>
-                    <td class="sprites" name="(think)"></td>
-                    <td class="sprites" name="(call)"></td>
-                    <td class="sprites" name="(tumbleweed)"></td>
-                    <td class="sprites" name="(beer)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(nerd)"></td>
-                    <td class="sprites" name="(hi)"></td>
-                    <td class="sprites" name="(mm)"></td>
-                    <td class="sprites" name="(puke)"></td>
-                    <td class="sprites" name="(worry)"></td>
-                    <td class="sprites" name="(facepalm)"></td>
-                    <td class="sprites" name="(dance)"></td>
-                    <td class="sprites" name="(bandit)"></td>
-                    <td class="sprites" name="(drink)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="|-)"></td>
-                    <td class="sprites" name="(ninja)"></td>
-                    <td class="sprites" name="(girl)"></td>
-                    <td class="sprites" name="(hug)"></td>
-                    <td class="sprites" name="(yn)"></td>
-                    <td class="sprites" name="(envy)"></td>
-                    <td class="sprites" name="(talktothehand)"></td>
-                    <td class="sprites" name="(cat)"></td>
-                    <td class="sprites" name="(idea)"></td>
-                </tr>
-                <tr>
-                    <td class="sprites" name="(rock)"></td>
-                    <td class="sprites" name="(poolparty)"></td>
-                </tr>
-            </table>
-        </section><!-- Fin de l'exemple -->
-        <!-- Formulaire contenant tout les camps d'identifications,... / Affiche le champ permettant d'écrire un message lors du click sur "Go" -->
-        <form action="" ng-submit="showTextField($event)" ng-hide="showForm" name=frm1 id="config">
-            <fieldset class="fields">
-                <p>
-                    <label for=nickname>Nickname :</label>
-                    <input type=text id=nickname name="nickname" ng-model="user.nickname" autofocus required>
-                </p>
-                <p>
-                    <label for=username>Username :</label>
-                    <input type=text id=username name="username" ng-model="user.username" required>
-                </p>
-                <p>
-                    <label for=realname>Realname :</label>
-                    <input type=text id=realname name="realname" ng-model="user.realname" required>
-                </p>
-                <p>
-                    <label for=password>Password :</label>
-                    <input type=password id=password name="password" ng-model="user.password" required>
-                </p>
-                <p>
-                    <label for=joinCommand>Auto-Join-Command : </label>
-                    <textarea rows="4" id=joinCommand name="joinCommand" ng-model="user.joinCommand" placeholder="Entrez la liste des salons que vous désirez rejoindre"></textarea>
-                </p>
-                <p>
-                    <label for=joinChannel>Auto-Join-Channel : </label>
-                    <textarea rows="4" id=joinChannel name=joinChannel ng-model="user.joinChannel" placeholder="Entrez la liste des commandes"></textarea>
-                </p>
-                <input type=submit value="Go">
-            </fieldset>
-        </form>
-        <!-- Champs pour écrire le message et l'envoyer / Caché par défaut -->
-        <form action="" ng-submit="sendText($event)" ng-show="showForm">
-            <fieldset class="inputText">
-                <textarea rows="4" placeholder="Entrez votre message ici..." required></textarea>
-                <input type="submit" id=Envoyer value="Envoyer">
-            </fieldset>
-        </form>
+                        <td class="sprites" name=":)"></td>
+                        <td class="sprites" name=":("></td>
+                        <td class="sprites" name=":D"></td>
+                        <td class="sprites" name="xD"></td>
+                        <td class="sprites" name="(cool)"></td>
+                        <td class="sprites" name=":o"></td>
+                        <td class="sprites" name=";)"></td>
+                        <td class="sprites" name="(chuckle)"></td>
+                        <td class="sprites" name=":'("></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(fear)"></td>
+                        <td class="sprites" name=":|"></td>
+                        <td class="sprites" name="(kiss)"></td>
+                        <td class="sprites" name=":p"></td>
+                        <td class="sprites" name=":$"></td>
+                        <td class="sprites" name="(wait)"></td>
+                        <td class="sprites" name="(angel)"></td>
+                        <td class="sprites" name=":x"></td>
+                        <td class="sprites" name="(devil)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(wasntme)"></td>
+                        <td class="sprites" name="(party)"></td>
+                        <td class="sprites" name=":@"></td>
+                        <td class="sprites" name="(doh)"></td>
+                        <td class="sprites" name="]:)"></td>
+                        <td class="sprites" name="(yawn)"></td>
+                        <td class="sprites" name="(inlove)"></td>
+                        <td class="sprites" name=":^)"></td>
+                        <td class="sprites" name="(idontcare)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(heidy)"></td>
+                        <td class="sprites" name="<3"></td>
+                        <td class="sprites" name="(star)"></td>
+                        <td class="sprites" name="(handshake)"></td>
+                        <td class="sprites" name="(n)"></td>
+                        <td class="sprites" name="(y)"></td>
+                        <td class="sprites" name="(emo)"></td>
+                        <td class="sprites" name="(clap)"></td>
+                        <td class="sprites" name="(rofl)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(bug)"></td>
+                        <td class="sprites" name="(headbang)"></td>
+                        <td class="sprites" name="(clock)"></td>
+                        <td class="sprites" name="(punch)"></td>
+                        <td class="sprites" name="(drunk)"></td>
+                        <td class="sprites" name="(smartphone)"></td>
+                        <td class="sprites" name="(film)"></td>
+                        <td class="sprites" name="(mail)"></td>
+                        <td class="sprites" name="(brokenheart)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(cake)"></td>
+                        <td class="sprites" name="(music)"></td>
+                        <td class="sprites" name="($)"></td>
+                        <td class="sprites" name="(pizza)"></td>
+                        <td class="sprites" name="(cafe)"></td>
+                        <td class="sprites" name="(sun)"></td>
+                        <td class="sprites" name="(flex)"></td>
+                        <td class="sprites" name="(tmi)"></td>
+                        <td class="sprites" name="(flower)"></td>
+                    </tr>
+                        <tr>
+                        <td class="sprites" name="(skome)"></td>
+                        <td class="sprites" name="(rain)"></td>
+                        <td class="sprites" name="(whew)"></td>
+                        <td class="sprites" name="(shake)"></td>
+                        <td class="sprites" name="(bow)"></td>
+                        <td class="sprites" name="(think)"></td>
+                        <td class="sprites" name="(call)"></td>
+                        <td class="sprites" name="(tumbleweed)"></td>
+                        <td class="sprites" name="(beer)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(nerd)"></td>
+                        <td class="sprites" name="(hi)"></td>
+                        <td class="sprites" name="(mm)"></td>
+                        <td class="sprites" name="(puke)"></td>
+                        <td class="sprites" name="(worry)"></td>
+                        <td class="sprites" name="(facepalm)"></td>
+                        <td class="sprites" name="(dance)"></td>
+                        <td class="sprites" name="(bandit)"></td>
+                        <td class="sprites" name="(drink)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="|-)"></td>
+                        <td class="sprites" name="(ninja)"></td>
+                        <td class="sprites" name="(girl)"></td>
+                        <td class="sprites" name="(hug)"></td>
+                        <td class="sprites" name="(yn)"></td>
+                        <td class="sprites" name="(envy)"></td>
+                        <td class="sprites" name="(talktothehand)"></td>
+                        <td class="sprites" name="(cat)"></td>
+                        <td class="sprites" name="(idea)"></td>
+                    </tr>
+                    <tr>
+                        <td class="sprites" name="(rock)"></td>
+                        <td class="sprites" name="(poolparty)"></td>
+                    </tr>
+                </table>
+            </section><!-- Fin de l'exemple -->
+            <!-- Formulaire contenant tout les camps d'identifications,... / Affiche le champ permettant d'écrire un message lors du click sur "Go" -->
+            <form action="" ng-submit="showTextField($event)" ng-hide="showForm" name=frm1 id="config">
+                <fieldset class="fields">
+                    <p>
+                        <label for=nickname>Nickname :</label>
+                        <input type=text id=nickname name="nickname" ng-model="user.nickname" autofocus required>
+                    </p>
+                    <p>
+                        <label for=username>Username :</label>
+                        <input type=text id=username name="username" ng-model="user.username" required>
+                    </p>
+                    <p>
+                        <label for=realname>Realname :</label>
+                        <input type=text id=realname name="realname" ng-model="user.realname" required>
+                    </p>
+                    <p>
+                        <label for=password>Password :</label>
+                        <input type=password id=password name="password" ng-model="user.password" required>
+                    </p>
+                    <p>
+                        <label for=joinCommand>Auto-Join-Command : </label>
+                        <textarea rows="4" id=joinCommand name="joinCommand" ng-model="user.joinCommand" placeholder="Entrez la liste des salons que vous désirez rejoindre"></textarea>
+                    </p>
+                    <p>
+                        <label for=joinChannel>Auto-Join-Channel : </label>
+                        <textarea rows="4" id=joinChannel name=joinChannel ng-model="user.joinChannel" placeholder="Entrez la liste des commandes"></textarea>
+                    </p>
+                    <input type=submit value="Go">
+                </fieldset>
+            </form>
+            <!-- Champs pour écrire le message et l'envoyer / Caché par défaut -->
+            <form action="" ng-submit="sendText($event)" ng-show="showForm">
+                <fieldset class="inputText">
+                    <textarea rows="4" ng-model="user.message" placeholder="Entrez votre message ici..." required></textarea>
+                    <input type="submit" id=Envoyer value="Envoyer">
+                </fieldset>
+            </form>
+        </div>
+        <aside>
+          <h1 id="titreAside">Connecté(s)</h1>
+          <section id="userConnected">
+            <ul>
+              <li ng-repeat="user in infos"></li>
+            </ul>
+          </section>
+        </aside>
     </body>
 </html>
