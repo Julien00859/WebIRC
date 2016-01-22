@@ -13,6 +13,7 @@ body {
   box-shadow: 5px;
   padding: 0 1em 1em 1em;
   margin: 0 auto;
+  float: left;
   color: white;
   background-color: #F2F5F8;
 }
@@ -28,7 +29,7 @@ h1 {
   color: lightgray;
   font-family: Oswald;
 }
-section {
+#chatbox {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   height: 800px;
@@ -107,11 +108,7 @@ aside {
   width: 305px;
   height: 1350px;
   background-color: #354b60;
-  border: none;
-  display: inline-block;
-  position: absolute;
-  right: 0px;
-  top: 0px;
+  float: left;
   text-align: center;
 }
 #titreAside {
@@ -120,4 +117,10 @@ aside {
 }
 #userConnected {
   border-top: 1px solid white;
+  color: white;
+  text-align: left;
+  padding-left: 1em
+}
+span {
+  font-family: Oswald;
 }
