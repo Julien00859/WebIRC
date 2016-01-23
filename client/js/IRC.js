@@ -1,9 +1,8 @@
-var IRC = function IRC(nickname, password, scope, callback) {
+var IRC = function IRC(nickname, password, callback) {
     // Varable d'instance
     var self = this;
     self.socket = io();
     self.callbacks = [];
-    self.scope = scope;
 
     // Envoyer une commande en brute sur le réseau IRC
     self.sendCommand = function sendCommand(command) {
@@ -63,6 +62,8 @@ var IRC = function IRC(nickname, password, scope, callback) {
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2];
                             var msg = linex.slice(3).join(" ").slice(1);
+
+                            onPrivMsg(sender, channel, msg)
                             break;
 
                         case "JOIN":
@@ -94,7 +95,7 @@ var IRC = function IRC(nickname, password, scope, callback) {
                               names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1);
                             }
 
-                            onJoin(self.scope, sender, channel, topic, names);
+                            onJoin(sender, channel, topic, names);
                             break;
 
                         case "KICK":

@@ -27,18 +27,17 @@
     </head>
     <body ng-controller="fieldsController as ctrl">
         <header>
-          <h1>Client IRC</h1>
+          <h1>Web IRC</h1>
         </header>
         <hr>
         <main>
           <nav>
             <ul>
-              <li ng-repeat="channel in ctrl.channels" ng-bind="channel.name"></li> <!-- Affiche la liste des channels -->
+              <li ng-repeat="channel in channels" ng-bind="channel.name"></li> <!-- Affiche la liste des channels -->
             </ul>
           </nav>
-          <section ng-repeat="channel in ctrl.channels"> <!-- Pour chaque salon -->
-            <div>
-              Connected users:
+          <section ng-repeat="channel in channels"> <!-- Pour chaque salon -->
+            <div> <!-- On affiche la liste des utilisateurs -->
               <ul>
                 <li ng-repeat="user in channel.users" ng-bind="user"></li>
               </ul>
