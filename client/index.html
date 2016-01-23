@@ -25,7 +25,7 @@
         <script src="js/IRC.js"></script>
 
     </head>
-    <body ng-controller="MainCtrl as ctrl">
+    <body ng-controller="fieldsController as ctrl">
         <header>
           <h1>Client IRC</h1>
         </header>
@@ -37,18 +37,25 @@
             </ul>
           </nav>
           <section ng-repeat="channel in ctrl.channels"> <!-- Pour chaque salon -->
+            <div>
+              Connected users:
+              <ul>
+                <li ng-repeat="user in channel.users" ng-bind="user"></li>
+              </ul>
+            </div>
             <div ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
               <h3 ng-bind="block.user"></h3> <!-- Une fois son auteur -->
               <p ng-repeat="message in block.messages" ng-bind="message.text"></p> <!-- Et chaque message -->
             </div>
           </section>
         </main>
-        <form onsubmit="register($event);">
-          <input ng-model="ctrl.me.nickname" placeholder="nickname">
-          <input ng-model="ctrl.me.password" placeholder="password">
-          <textarea ng-model="ctrl.me.autoChannels" placeholder="channels"></textarea>
-          <textarea ng-model="ctrl.me.autoCommands" placeholder="commands"></textarea>
-          <input type=submit>
+        <hr>
+        <form ng-submit="register($event);">
+          <input ng-model="me.nickname" placeholder="nickname">
+          <input ng-model="me.password" placeholder="password">
+          <textarea ng-model="me.autoChannels" placeholder="channels"></textarea>
+          <textarea ng-model="me.autoCommands" placeholder="commands"></textarea>
+          <input type=submit ng-disabled="me.connected">
         </form>
         <hr>
         <footer>

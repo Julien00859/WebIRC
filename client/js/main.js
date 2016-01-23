@@ -5,25 +5,28 @@ var chatIrc = angular.module("chatIrc", []);
 // Controlleur du module chatIrc
 chatIrc.controller("fieldsController", function($scope) {
   $scope.channels = { // Liste des salons
-// String(): { // Un salon en particulier
-//    name: String(), // Son nom
-//    topic: String(), // Le topic associé
-//    users: [ // La liste d'utilisateur dedans
-//      Strin() // Un utilisateur
-//    ],
-//    blocks: [ // La liste des blocks de message
-//      { // Un block de message (messages envoyés par la suite par un même utilisateur)
-//        user: String(), // L'utilisateur qui l'a envoyé
-//        messages: [ // La liste des messages
-//          { // Un message en particulier
-//            time: Date(), // L'heure à laquelle le message a été envoyé
-//            text: String() // Le texte du message
-//          } // Fin message
-//        ] // Fin messages
-//      } // Fin block
-//    ] // Fin blocks
-//  } // Fin channel
-  } // Fin object
+    "Dev": { // Un salon en particulier
+       name: "#Dev", // Son nom
+       topic: "Salon de développement", // Le topic associé
+       users: [ // La liste d'utilisateur dedans
+         "@Julien", // Un utilisateur
+         "%Mathieu",
+         "+Danielle",
+         "Nathan"
+       ],
+       blocks: [ // La liste des blocks de message
+         { // Un block de message (messages envoyés par la suite par un même utilisateur)
+           user: "@Julien", // L'utilisateur qui l'a envoyé
+           messages: [ // La liste des messages
+             { // Un message en particulier
+               time: new Date(), // L'heure à laquelle le message a été envoyé
+               text: "Hello world" // Le texte du message
+             } // Fin message
+           ] // Fin messages
+         } // Fin block
+       ] // Fin blocks
+     } // Fin channel
+   } // Fin object
 
   $scope.me = { // Infos de l'utilisateur actif sur la page
 //  nickname: String(), // Le nickname de l'utilisateur
@@ -45,16 +48,22 @@ chatIrc.controller("fieldsController", function($scope) {
   }
 
   $scope.register = function register(event) {
-    $scope.irc = IRC(
+    $scope.me.connected = true;
+    $scope.irc = new IRC(
       $scope.me.nickname,
-      $scope.me.password,
+      $scope.me.password ? $scope.me.password : "",
+      $scope,
       function() {
-        $scope.me.autoChannels.split("\r\n").forEach(function(channel){
-          $scope.join(channel);
-        });
-        $scope.me.autoCommands.split("\r\n").forEach(function(command){
-          $scope.irc.sendCommand(command);
-        })
+        if ($scope.me.autoChannels) {
+          $scope.me.autoChannels.split("\r\n").forEach(function(channel){
+            $scope.irc.sendCommand("JOIN " + channel);
+          });
+        }
+        if ($scope.me.autoCommands) {
+          $scope.me.autoCommands.split("\r\n").forEach(function(command){
+            $scope.irc.sendCommand(command);
+          });
+        }
       });
 
     event.preventDefault();
@@ -65,24 +74,6 @@ chatIrc.controller("fieldsController", function($scope) {
     event.preventDefault();
   }
 
-  $scope.join = function join(channel) {
-    $scope.irc.sendCommand("JOIN " + channel);
-    $scope.irc.channels[channel] = {
-      name: channel,
-      users: [],
-      topic: "",
-      blocks: []
-    }
-
-    $scope.irc.sendNamesQuery(channel, function(names){
-      $scope.channels[channel].users = names;
-    });
-
-    $scope.irc.sendTopicQuery(channel, function(topic){
-      $scope.channels[channel].topic = topic;
-    });
-  }
-
   this.getActiveChannelClass = function getActiveChannelClass(channel) {
     return {
       activeChannel: channel == $scope.currentChannel, // Active la classe activeChannel si c'est le salon courant, sinon la désactive
@@ -90,3 +81,21 @@ chatIrc.controller("fieldsController", function($scope) {
     }
   }
 });
+
+function onJoin(scope, sender, channel, topic, names) {
+  if (!(channel in scope.channels)) { // Je rejoins un nouveau salon que je n'avais jamais rejoint avant
+    scope.channels[channel] =  {
+      name: channel,
+      users: [scope.me.nickname],
+      topic: "",
+      blocks: []
+    }
+  }
+  if (sender != scope.me.nickname) { // Un nouvel utilisateur arrive sur un salon où je suis déjà
+    scope.channels[channel].users.push(sender);
+  } else { // Je rejoins un nouveau salon
+    if (typeof topic != undefined) scope.channels[channel].topic = topic;
+    if (typeof names != undefined) scope.channels[channel].users = names;
+  }
+  console.log(scope.channels)
+}

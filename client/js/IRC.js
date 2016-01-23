@@ -1,8 +1,9 @@
-var IRC = function IRC(nickname, password, callback) {
+var IRC = function IRC(nickname, password, scope, callback) {
     // Varable d'instance
     var self = this;
     self.socket = io();
     self.callbacks = [];
+    self.scope = scope;
 
     // Envoyer une commande en brute sur le réseau IRC
     self.sendCommand = function sendCommand(command) {
@@ -20,7 +21,7 @@ var IRC = function IRC(nickname, password, callback) {
         console.log("> NAMES " + channel);
         var callbackId = self.callbacks.length;
         self.callbacks.push(callback);
-        self.socket.emit("names", channels, callbackId);
+        self.socket.emit("names", channel, callbackId);
     }
 
     // Envoyer une requête pour récupérer le topic d'un salon
@@ -38,8 +39,9 @@ var IRC = function IRC(nickname, password, callback) {
     self.socket.on("IRCMessage", function(IRCMessage){
 
         // Récupère chaque ligne du message reçu et l'affiche en console
-        for (var index in IRCMessage.split("\r\n")) {
-            var line = IRCMessage.split("\r\n")[index];
+        lines = IRCMessage.split("\r\n")
+        for (var index in lines) {
+            var line = lines[index];
             console.log(line)
 
             if (!self.connected) { // Si on a pas encore reçu le MOTD
@@ -66,8 +68,33 @@ var IRC = function IRC(nickname, password, callback) {
                         case "JOIN":
                             // :Julien00859!Julien@host-85-201-171-39.dynamic.voo.be JOIN :#Dev
                             //  ^^^^^^^^^^^                                                ^^^^
+                            // :127.0.0.1 332 Julien00859 #Dev :Salut tout le monde :D
+                            //                                  ^^^^^^^^^^^^^^^^^^^^^^
+                            // :127.0.0.1 333 Julien00859 #Dev Julien008!Julien@94.111.231.0 1453514793
+                            // :127.0.0.1 353 Julien = #Dev :Juilen @Julien008 jsfljdflkjkflsj
+                            //                              [^^^^^^,^^^^^^^^^^,^^^^^^^^^^^^^^^]
+                            // :127.0.0.1 366 jsfljdflkjkflsj #Dev :End of /NAMES list.
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2].slice(1);
+
+                            // Truc de gros porc :D
+                            var topicAndName;
+                            var topic;
+                            var names;
+                            for (var i in lines.slice(index)) {
+                              if (lines[parseInt(index) + parseInt(i)].indexOf(":End of /NAMES list.") >= 0) {
+                                topicAndName = lines.slice(index, parseInt(index) + parseInt(i) + 1);
+                                break;
+                              }
+                            }
+                            if (topicAndName.length >= 5) {
+                              topic = topicAndName[1].split(" ").slice(4).join(" ").slice(1);
+                            }
+                            if (topicAndName.length >= 3 && topicAndName.slice(-1)[0].indexOf(":End of /NAMES list.") >= 0) {
+                              names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1);
+                            }
+
+                            onJoin(self.scope, sender, channel, topic, names);
                             break;
 
                         case "KICK":
@@ -115,7 +142,6 @@ var IRC = function IRC(nickname, password, callback) {
 
         var topic = messages.split("\r\n")[0].split(" ").slice(4).join(" ").slice(1);
         self.callbacks[callbackId](topic);
-        delete self.callbacks[callbackId];
     });
 
     self.socket.on("names", function(messages, callbackId) {
@@ -125,12 +151,5 @@ var IRC = function IRC(nickname, password, callback) {
 
         var names = messages.split("\r\n")[0].split(" ").slice(5).join(" ").slice(1).split(" ");
         self.callbacks[callbackId](names);
-        delete self.callbacks[callbackId];
     });
-}
-var irc;
-// À déplacer dans le controleur et changer les variables par défaut
-function connect() {
-    console.log("Connecting to IRC");
-    irc = new IRC("WebIRC", "", ["#Dev"], []);
 }
