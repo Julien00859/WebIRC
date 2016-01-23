@@ -85,14 +85,14 @@ var IRC = function IRC(nickname, password, callback) {
                             for (var i in lines.slice(index)) {
                               if (lines[parseInt(index) + parseInt(i)].indexOf(":End of /NAMES list.") >= 0) {
                                 topicAndName = lines.slice(index, parseInt(index) + parseInt(i) + 1);
+                                if (topicAndName.length >= 5) {
+                                  topic = topicAndName[1].split(" ").slice(4).join(" ").slice(1);
+                                }
+                                if (topicAndName.length >= 3 && topicAndName.slice(-1)[0].indexOf(":End of /NAMES list.") >= 0) {
+                                  names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1);
+                                }
                                 break;
                               }
-                            }
-                            if (topicAndName.length >= 5) {
-                              topic = topicAndName[1].split(" ").slice(4).join(" ").slice(1);
-                            }
-                            if (topicAndName.length >= 3 && topicAndName.slice(-1)[0].indexOf(":End of /NAMES list.") >= 0) {
-                              names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1);
                             }
 
                             onJoin(sender, channel, topic, names);

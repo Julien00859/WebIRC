@@ -12,7 +12,7 @@
 
         <!-- Nos fichiers CSS -->
         <link href="css/sprites.css" rel="stylesheet" type="text/css">
-        <!-- <link href="css/style.css" rel="stylesheet" type="text/css"> -->
+        <!--<link href="css/style.css" rel="stylesheet" type="text/css">-->
 
         <!-- Dépendances JavaScript -->
         <script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
@@ -30,13 +30,17 @@
           <h1>Web IRC</h1>
         </header>
         <hr>
+
         <main>
           <nav>
             <ul>
               <li ng-repeat="channel in channels" ng-bind="channel.name"></li> <!-- Affiche la liste des channels -->
             </ul>
           </nav>
-          <section ng-repeat="channel in channels"> <!-- Pour chaque salon -->
+          <section ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- Pour chaque salon -->
+            <div> <!-- On affiche le salon et son topic -->
+              <p>{{channel.topic}}</p>
+            </div>
             <div> <!-- On affiche la liste des utilisateurs -->
               <ul>
                 <li ng-repeat="user in channel.users" ng-bind="user"></li>
@@ -44,24 +48,34 @@
             </div>
             <div ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
               <h3 ng-bind="block.user"></h3> <!-- Une fois son auteur -->
-              <p ng-repeat="message in block.messages" ng-bind="message.text"></p> <!-- Et chaque message -->
+              <p ng-repeat="message in block.messages"
+                  ng-bind="message.text"
+                  ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
+                  ng-class="getMessageType(message.type);">
+              </p> <!-- Et chaque message -->
             </div>
           </section>
         </main>
+
         <hr>
-        <form ng-submit="register($event);">
+
+        <form ng-submit="register($event);" ng-hide="me.connected">
           <input ng-model="me.nickname" placeholder="nickname">
           <input ng-model="me.password" placeholder="password">
           <textarea ng-model="me.autoChannels" placeholder="channels"></textarea>
           <textarea ng-model="me.autoCommands" placeholder="commands"></textarea>
           <input type=submit ng-disabled="me.connected">
         </form>
+
+        <form ng-submit="sendMessage($event);" ng-show="me.connected">
+          <textarea ng-model="message"></textarea>
+          <input type=submit>
+        </form>
         <hr>
+
         <footer>
-          <p>WebIRC Client by Castiaux Julien &amp; Rousseau Mathieu</p>
+          <p>WebIRC Client by Rousseau Mathieu &amp; Castiaux Julien</p>
         </footer>
-
-
 
         <table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
             <caption>Liste des smileys disponible</caption>
