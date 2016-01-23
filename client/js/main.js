@@ -4,60 +4,89 @@ var main = angular.module("main", ["chatIrc"]);
 var chatIrc = angular.module("chatIrc", []);
 // Controlleur du module chatIrc
 chatIrc.controller("fieldsController", function($scope) {
+  $scope.channels = { // Liste des salons
+// String(): { // Un salon en particulier
+//    name: String(), // Son nom
+//    topic: String(), // Le topic associé
+//    users: [ // La liste d'utilisateur dedans
+//      Strin() // Un utilisateur
+//    ],
+//    blocks: [ // La liste des blocks de message
+//      { // Un block de message (messages envoyés par la suite par un même utilisateur)
+//        user: String(), // L'utilisateur qui l'a envoyé
+//        messages: [ // La liste des messages
+//          { // Un message en particulier
+//            time: Date(), // L'heure à laquelle le message a été envoyé
+//            text: String() // Le texte du message
+//          } // Fin message
+//        ] // Fin messages
+//      } // Fin block
+//    ] // Fin blocks
+//  } // Fin channel
+  } // Fin object
 
-  $scope.infos = []; // Tableau vide destiné à recevoir les infos d'indentification de l'user
-  var nm = []; // Tableau de travail (contenant les noms des users connectés)
-  $scope.tp = []; // Tableau de travail (contenant les topics)
+  $scope.me = { // Infos de l'utilisateur actif sur la page
+//  nickname: String(), // Le nickname de l'utilisateur
+//  password: String(), // Le mot de passe pour entrer sur le serveur
+//  autoChannels: [ // La liste des channels à rejoindre automatiquement
+//    String() // Un salon à rejoindre une fois connecté
+//  ],
+//  autoCommands: [ // La liste des commandes à exécuter automatiquement
+//    String() // Une commande à exécuter une fois connecté
+//  ]
+  }
 
-  $scope.initPage = function init() { // Affiche l'heure au chargement de la page
-    function getDate() {
-      var fulldate = new Date();
-      var hours = fulldate.getHours();
-      var minutes = fulldate.getMinutes();
-      var date = fulldate.toLocaleDateString();
-      console.log(date + " " + hours + ":" + minutes);
-      $("#date").text(date + " " + hours + ":" + minutes);
-    };
-    setInterval(getDate, 60000); // Heure mis à jour toute les minutes
-  };
+  $scope.currentChannel = "";
 
-  $scope.showTextField = function(event, sender, channel) { // Fonction lors de l'envoi du formulaire d'identification
-    $scope.infos.push({ // Ajout des infos renseignés par l'user dans le tableau $scope.infos
-      nickname: $scope.user.nickname,
-      username: $scope.user.username,
-      realname: $scope.user.realname,
-      password: $scope.user.password,
-      channel: $scope.user.joinCommand,
-      command: $scope.user.joinChannel
+  $scope.users = { // Liste totale des utilisateurs connus
+//  String(): { // Un utilisateur en particulier
+//    nickname: String()
+//  }
+  }
+
+  $scope.register = function register(event) {
+    $scope.irc = IRC(
+      $scope.me.nickname,
+      $scope.me.password,
+      function() {
+        $scope.me.autoChannels.split("\r\n").forEach(function(channel){
+          $scope.join(channel);
+        });
+        $scope.me.autoCommands.split("\r\n").forEach(function(command){
+          $scope.irc.sendCommand(command);
+        })
+      });
+
+    event.preventDefault();
+  }
+
+  $scope.sendMessage = function sendMessage(event) {
+    $scope.irc.sendMessage($scope.currentChannel, $scope.message);
+    event.preventDefault();
+  }
+
+  $scope.join = function join(channel) {
+    $scope.irc.sendCommand("JOIN " + channel);
+    $scope.irc.channels[channel] = {
+      name: channel,
+      users: [],
+      topic: "",
+      blocks: []
+    }
+
+    $scope.irc.sendNamesQuery(channel, function(names){
+      $scope.channels[channel].users = names;
     });
-    //console.log($scope.infos);
-    $scope.showForm = true; // Lors de l'envoi du 1er form, on le cache et on affiche le second formulaire
-    $scope.showChl = true; // Affiche dans le titre le(s) salon(s) auquel on s'est connecté
 
-
-    var user1 = $scope.infos[0];
-    //console.log(user1.channel);
-
-    event.preventDefault(); // Bloque l'envoi du formulaire
-  };
-
-  $scope.sendText = function(event, sender, channel, msg) { // Fonction lors de l'envoi du formulaire de message
-
-    var user1 = $scope.infos[0];
-
-    IRC.sendCommand(user1.command);
-    IRC.sendMessage(user1.channel || user1.nickname, $scope.user.message);
-
-    IRC.sendNamesQuery(user1.channel, function(names) {
-      console.log(names.join(" "));
-      nm.push(names);
+    $scope.irc.sendTopicQuery(channel, function(topic){
+      $scope.channels[channel].topic = topic;
     });
+  }
 
-    IRC.sendTopicQuery(user1.channel, function(topic) {
-      console.log(topic.join(" "));
-      $scope.tp.push(topic);
-    });
-
-    event.preventDefault(); // Bloque l'envoi du formulaire
-  };
+  this.getActiveChannelClass = function getActiveChannelClass(channel) {
+    return {
+      activeChannel: channel == $scope.currentChannel, // Active la classe activeChannel si c'est le salon courant, sinon la désactive
+      notActiveChannel: channel != $scope.currentChannel // Active la classe notActiveChannel si ce n'est pas le salon courant, sinon la désactive
+    }
+  }
 });

@@ -1,4 +1,4 @@
-var IRC = function IRC(nickname, password, channels, commands) {
+var IRC = function IRC(nickname, password, callback) {
     // Varable d'instance
     var self = this;
     self.socket = io();
@@ -45,10 +45,7 @@ var IRC = function IRC(nickname, password, channels, commands) {
             if (!self.connected) { // Si on a pas encore reçu le MOTD
                 if (line.indexOf("End of message of the day") > -1) {
                     self.connected = true; // Ok on est connecté !
-                    channels.forEach(function(chan) self.sendCommand("JOIN " + chan)); // On rejoint les salons
-                    commands.forEach(function(cmd) self.sendCommand(cmd)); // On envoie les commandes
-                    delete channels;
-                    delete commands;
+                    callback();
                     break; // On passe les autres messages du MOTD
                 }
             } else { // Sinon si on est en phase de connexion normal
