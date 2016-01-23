@@ -4,25 +4,27 @@ var main = angular.module("main", ["chatIrc"]);
 var chatIrc = angular.module("chatIrc", []);
 // Controlleur du module chatIrc
 chatIrc.controller("fieldsController", function($scope) {
+  var self = this;
   $scope.channels = { // Liste des salons
-// String(): { // Un salon en particulier
+// #Dev: { // Un salon en particulier
 //    name: String(), // Son nom
 //    topic: String(), // Le topic associé
 //    users: [ // La liste d'utilisateur dedans
-//      Strin() // Un utilisateur
+//      String() // Un utilisateur
 //    ],
 //    blocks: [ // La liste des blocks de message
 //      { // Un block de message (messages envoyés par la suite par un même utilisateur)
 //        user: String(), // L'utilisateur qui l'a envoyé
 //        messages: [ // La liste des messages
 //          { // Un message en particulier
+//            type: String(), // Le type du message (msg, kick, join, ...)
 //            time: Date(), // L'heure à laquelle le message a été envoyé
 //            text: String() // Le texte du message
 //          } // Fin message
 //        ] // Fin messages
 //      } // Fin block
 //    ] // Fin blocks
-//  } // Fin channel
+//  }// Fin channel
   } // Fin object
 
   $scope.me = { // Infos de l'utilisateur actif sur la page
@@ -45,16 +47,22 @@ chatIrc.controller("fieldsController", function($scope) {
   }
 
   $scope.register = function register(event) {
-    $scope.irc = IRC(
+    $scope.me.connected = true;
+    $scope.irc = new IRC(
       $scope.me.nickname,
-      $scope.me.password,
+      $scope.me.password ? $scope.me.password : "",
       function() {
-        $scope.me.autoChannels.split("\r\n").forEach(function(channel){
-          $scope.join(channel);
-        });
-        $scope.me.autoCommands.split("\r\n").forEach(function(command){
-          $scope.irc.sendCommand(command);
-        })
+        if ($scope.me.autoChannels) {
+          $scope.me.autoChannels.split("\r\n").forEach(function(channel){
+            $scope.irc.sendCommand("JOIN " + channel);
+            $scope.currentChannel = channel;
+          });
+        }
+        if ($scope.me.autoCommands) {
+          $scope.me.autoCommands.split("\r\n").forEach(function(command){
+            $scope.irc.sendCommand(command);
+          });
+        }
       });
 
     event.preventDefault();
@@ -62,31 +70,93 @@ chatIrc.controller("fieldsController", function($scope) {
 
   $scope.sendMessage = function sendMessage(event) {
     $scope.irc.sendMessage($scope.currentChannel, $scope.message);
+    if ($scope.channels[$scope.currentChannel].blocks.length > 0 && $scope.channels[$scope.currentChannel].blocks.slice(-1)[0].user == $scope.me.nickname) {
+      $scope.channels[$scope.currentChannel].blocks.slice(-1)[0].messages.push(
+        {
+          type: "msg",
+          time: new Date(),
+          text: $scope.message
+        }
+      );
+    } else {
+      $scope.channels[$scope.currentChannel].blocks.push(
+        {
+          user: $scope.me.nickname,
+          messages: [
+            {
+              type: "msg",
+              time: new Date(),
+              text: $scope.message
+            }
+          ]
+        }
+      );
+    }
+    $scope.message = "";
     event.preventDefault();
   }
 
-  $scope.join = function join(channel) {
-    $scope.irc.sendCommand("JOIN " + channel);
-    $scope.irc.channels[channel] = {
-      name: channel,
-      users: [],
-      topic: "",
-      blocks: []
-    }
-
-    $scope.irc.sendNamesQuery(channel, function(names){
-      $scope.channels[channel].users = names;
-    });
-
-    $scope.irc.sendTopicQuery(channel, function(topic){
-      $scope.channels[channel].topic = topic;
-    });
-  }
-
-  this.getActiveChannelClass = function getActiveChannelClass(channel) {
+  $scope.getActiveChannelClass = function getActiveChannelClass(channel) {
     return {
       activeChannel: channel == $scope.currentChannel, // Active la classe activeChannel si c'est le salon courant, sinon la désactive
       notActiveChannel: channel != $scope.currentChannel // Active la classe notActiveChannel si ce n'est pas le salon courant, sinon la désactive
     }
   }
+
+  $scope.getMessageType = function getMessageType(type) {
+    return {
+      typeMsg: type == "msg",
+      typeJoin: type == "join",
+      typeKick: type == "kick",
+      typeQuit: type == "quit",
+      typePart: type == "part",
+      typeMode: type == "mode"
+    }
+  }
 });
+
+function onJoin(sender, channel, topic, names) {
+  var scope = angular.element(document.body).scope();
+  if (!(channel in scope.channels)) { // Je rejoins un nouveau salon que je n'avais jamais rejoint avant
+    scope.channels[channel] =  {
+      name: channel,
+      users: [scope.me.nickname],
+      topic: "",
+      blocks: []
+    }
+  }
+  if (sender != scope.me.nickname) { // Un nouvel utilisateur arrive sur un salon où je suis déjà
+    scope.channels[channel].users.push(sender);
+  } else { // Je rejoins un nouveau salon
+    if (typeof topic != undefined) scope.channels[channel].topic = topic;
+    if (typeof names != undefined) scope.channels[channel].users = new Array().concat(names.split(" "));
+  }
+  scope.$apply();
+}
+
+function onPrivMsg(sender, channel, message) {
+  var scope = angular.element(document.body).scope();
+  if (scope.channels[channel].blocks.length > 0 && scope.channels[channel].blocks.slice(-1)[0].user == sender) {
+    scope.channels[channel].blocks.slice(-1)[0].messages.push(
+      {
+        type: "msg",
+        time: new Date(),
+        text: message
+      }
+    );
+  } else {
+    scope.channels[channel].blocks.push(
+      {
+        user: sender,
+        messages: [
+          {
+            type: "msg",
+            time: new Date(),
+            text: message
+          }
+        ]
+      }
+    );
+  }
+  scope.$apply();
+}
