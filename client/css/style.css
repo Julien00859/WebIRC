@@ -9,7 +9,7 @@ body {
   max-width: 1105px;
   max-height: 1350px;
   margin: auto;
-  /*display: inline-flex;*/
+  display: inline-flex;
 }
 .ircChat {
   box-sizing: border-box;
