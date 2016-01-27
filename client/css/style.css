@@ -24,6 +24,19 @@ h1 {
   width: 120px;
   display: inline-block;
 }
+header > h1 {
+  width: 100px;
+}
+h3 {
+  margin-bottom: 0;
+}
+nav {
+  font-family: Oswald;
+  color: lightgray;
+}
+nav > ul {
+  margin: 5px 0;
+}
 #titre {
   display: inline-block;
   color: lightgray;
@@ -64,9 +77,9 @@ ul {
 .message-l /*, .message-r*/ {
   background-color: #27ae60;
   padding : 12px 15px;
-  margin-top: 10px;
+  margin-top: 0;
   /*line-height: 25px;*/
-  border-radius: 5px;
+  border-radius: 0 5px 5px 5px;
   margin-bottom: 30px;
   /*width: 85%;*/
 }
@@ -119,6 +132,9 @@ aside {
   color: white;
   text-align: left;
   padding-left: 1em
+}
+#userConnected li {
+  margin: 0.3em 0;
 }
 span {
   font-family: Oswald;
