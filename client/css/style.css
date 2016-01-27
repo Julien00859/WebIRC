@@ -5,7 +5,7 @@
 body {
   max-width: 1105px;
   max-height: 1350px;
-  margin: 0 auto;
+  margin: 0 25%;
   display: inline-flex;
 }
 .ircChat {
@@ -41,27 +41,28 @@ ul {
   list-style-type: none;
   padding: 0;
 }
-.left {
+/*.left {
   text-align: left;
 
 }
 .right {
   text-align: right;
-}
+}*/
 .date {
   color: lightgray;
 }
 .user {
   color: #34495e;
 }
-.message-l {
+/*.message-l {
   background-color: #27ae60;
 }
 .message-r {
   background-color: #2980b9;
   float: right;
-}
-.message-l, .message-r {
+}*/
+.message-l, /*.message-r*/ {
+  background-color: #27ae60;
   padding : 12px 15px;
   margin-top: 10px;
   line-height: 25px;
@@ -72,12 +73,12 @@ ul {
 .inputText {
   padding: 1em 0;
 }
-input[type=text], input[type=password], textarea {
-  border-radius: 5px;
-  border: none;
+input[type=text], input[type=password] {
+  border: 1px solid lightgray;
 }
 textarea {
   width: 100%;
+  border: none;
 }
 label {
   color: #92959E;
@@ -121,4 +122,9 @@ aside {
 }
 span {
   font-family: Oswald;
+}
+footer {
+  color: #2c3e50;
+  font-family: Oswald;
+  text-align: center;
 }
