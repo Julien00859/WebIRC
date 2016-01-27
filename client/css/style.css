@@ -61,14 +61,14 @@ ul {
   background-color: #2980b9;
   float: right;
 }*/
-.message-l, /*.message-r*/ {
+.message-l /*, .message-r*/ {
   background-color: #27ae60;
   padding : 12px 15px;
   margin-top: 10px;
-  line-height: 25px;
+  /*line-height: 25px;*/
   border-radius: 5px;
   margin-bottom: 30px;
-  width: 85%;
+  /*width: 85%;*/
 }
 .inputText {
   padding: 1em 0;
