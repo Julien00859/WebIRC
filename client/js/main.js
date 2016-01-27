@@ -38,72 +38,48 @@ chatIrc.controller("fieldsController", function($scope) {
 //  ]
   }
 
-  $scope.currentChannel = "";
+  $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
 
-  $scope.users = { // Liste totale des utilisateurs connus
-//  String(): { // Un utilisateur en particulier
-//    nickname: String()
-//  }
-  }
-
+  // Fonction pour s'enregistrer sur le serveur IRC
   $scope.register = function register(event) {
     $scope.me.connected = true;
+
+    // Crée un objet irc en lui passant nickname, password et une fonction de callback
     $scope.irc = new IRC(
       $scope.me.nickname,
       $scope.me.password ? $scope.me.password : "",
-      function() {
+      function() { // Fonction de callback a exécuter une fois connecté
+        // Rejoint les salons auto
         if ($scope.me.autoChannels) {
           $scope.me.autoChannels.split("\r\n").forEach(function(channel){
             $scope.irc.sendCommand("JOIN " + channel);
-            $scope.currentChannel = channel;
           });
         }
+        // Envoie les commandes auto
         if ($scope.me.autoCommands) {
           $scope.me.autoCommands.split("\r\n").forEach(function(command){
             $scope.irc.sendCommand(command);
           });
         }
       });
-
-    event.preventDefault();
+    event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
+  // Fonction pour envoyer un message (commande PRIVMSG) sur le salon courant
   $scope.sendMessage = function sendMessage(event) {
-    $scope.irc.sendMessage($scope.currentChannel, $scope.message);
-    if ($scope.channels[$scope.currentChannel].blocks.length > 0 && $scope.channels[$scope.currentChannel].blocks.slice(-1)[0].user == $scope.me.nickname) {
-      $scope.channels[$scope.currentChannel].blocks.slice(-1)[0].messages.push(
-        {
-          type: "msg",
-          time: new Date(),
-          text: $scope.message
-        }
-      );
-    } else {
-      $scope.channels[$scope.currentChannel].blocks.push(
-        {
-          user: $scope.me.nickname,
-          messages: [
-            {
-              type: "msg",
-              time: new Date(),
-              text: $scope.message
-            }
-          ]
-        }
-      );
-    }
-    $scope.message = "";
-    event.preventDefault();
+    $scope.irc.sendMessage($scope.currentChannel, $scope.message); // Envoit le message au serveur IRC
+    addText($scope, $scope.currentChannel, $scope.me.nickname, "msg", new Date(), $scope.message); // Ajoute le texte sur la page HTML
+    $scope.message = ""; // Retire le text de la textarea
+    event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
-  $scope.getActiveChannelClass = function getActiveChannelClass(channel) {
-    return {
-      activeChannel: channel == $scope.currentChannel, // Active la classe activeChannel si c'est le salon courant, sinon la désactive
-      notActiveChannel: channel != $scope.currentChannel // Active la classe notActiveChannel si ce n'est pas le salon courant, sinon la désactive
-    }
+  // Fonction qui retourne true si le salon passé en argument est le salon actif
+  $scope.isCurrentChannel = function isCurrentChannel(channel) {
+    return channel == $scope.currentChannel;
   }
 
-  $scope.getMessageType = function getMessageType(type) {
+  // Fonction qui retourne la classe d'un message selon le type passé en argument
+  $scope.getMessageTypeClass = function getMessageType(type) {
     return {
       typeMsg: type == "msg",
       typeJoin: type == "join",
@@ -113,46 +89,113 @@ chatIrc.controller("fieldsController", function($scope) {
       typeMode: type == "mode"
     }
   }
+
+  // Fonction qui returne la classe d'un utilisateur en fonction du prefix du nickname passé en argument
+    $scope.getUserModeClass = function getUserModeClass(user) {
+    return {
+      modeUser: user[0] != "+" && user[0] != "%" && user[0] != "@",
+      modeVoice: user[0] == "+",
+      modeHalfOP: user[0] == "%",
+      modeOP: user[0] == "@"
+    }
+  }
 });
 
+// Fonctions event lié à IRC.js
+
 function onJoin(sender, channel, topic, names) {
-  var scope = angular.element(document.body).scope();
-  if (!(channel in scope.channels)) { // Je rejoins un nouveau salon que je n'avais jamais rejoint avant
-    scope.channels[channel] =  {
+  var scope = angular.element(document.body).scope(); // Récupération du $scope du controleur
+  if (!(channel in scope.channels)) { // Lorsque d'un nouveau salon est rejoint
+    scope.channels[channel] =  { // On crée la mapping de base lié à ce salon, elle sera peuplé après
       name: channel,
-      users: [scope.me.nickname],
+      users: [],
       topic: "",
       blocks: []
     }
   }
-  if (sender != scope.me.nickname) { // Un nouvel utilisateur arrive sur un salon où je suis déjà
-    scope.channels[channel].users.push(sender);
-  } else { // Je rejoins un nouveau salon
-    if (typeof topic != undefined) scope.channels[channel].topic = topic;
-    if (typeof names != undefined) scope.channels[channel].users = new Array().concat(names.split(" "));
+  if (sender != scope.me.nickname) { // Lorsqu'un utilisateur rejoint un salon sur lequel on est présent
+    scope.channels[channel].users.push(sender); // On l'ajoute simplement à la liste des utilisateurs connectés au salon
+  } else { // Lorsque c'est l'utilisateur qui rejoint un salon
+    $scope.currentChannel = channel; // On le défini comme salon actif
+    if (typeof topic != undefined) scope.channels[channel].topic = topic; // On ajoute le topic
+    if (typeof names != undefined) scope.channels[channel].users = new Array().concat(names.split(" ").filter(function(name){return name != ""})); // On ajoute la liste des utilisateurs
   }
+  // On affiche le message sur la page HTML
+  scope.channels[channel].blocks.push(
+    {
+      user: sender,
+      messages: [
+        {
+          type: "join",
+          time: new Date(),
+          text: sender + " a rejoint le salon !"
+        }
+      ]
+    }
+  );
   scope.$apply();
 }
 
 function onPrivMsg(sender, channel, message) {
   var scope = angular.element(document.body).scope();
-  if (scope.channels[channel].blocks.length > 0 && scope.channels[channel].blocks.slice(-1)[0].user == sender) {
-    scope.channels[channel].blocks.slice(-1)[0].messages.push(
+  if (channel in $scope.channels) addText(scope, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
+  else if (channel == $scope.me.nickname) { // Sinon, si le salon n'existe pas encore (lors du démarrage du convo privé)
+    scope.channels[sender] =  { // On crée la mapping de base pour un salon
+      name: sender,
+      users: [sender, $scope.me.nickname],
+      topic: "Message privé avec " + sender,
+      blocks: []
+    }
+    addText(scope, sender, sender, "msg", new Date(), message); // On écrit le message
+  }
+}
+
+function onQuit(sender, message) {
+  var scope = angular.element(document.body).scope();
+  Object.keys(scope.channels).forEach(function(channel){
+    addText(scope, channel, sender, "quit", new Date(), sender + " a quitté le serveur: \"" + message + "\"");
+    scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
+  });
+}
+
+function onPart(sender, channel, message) {
+  var scope = angular.element(document.body).scope();
+  addText(scope, channel, sender, "part", new Date(), sender + " a quitté le salon: \"" + message + "\"");
+  scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
+}
+
+function onKick(sender, channel, target, message) {
+  var scope = angular.element(document.body).scope();
+  addText(scope, channel, sender, "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\"");
+  scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(target), 1);
+}
+
+function onMode(sender, channel, mode, target) {
+  var scope = angular.element(document.body).scope();
+  scope.irc.sendNamesQuery(channel, function(names){
+    scope.channels[channel].users = names.filter(function(nickname){return nickname != ""});
+    scope.$apply();
+  });
+}
+
+function addText(scope, channel, user, type, time, text) {
+  if (scope.channels[channel].blocks.length > 0 && scope.channels[channel].blocks.slice(-1)[0].user == sender) { // Si ce n'est pas le premier message et que l'user concorde avec le dernier ayant écrit quelque chose
+    scope.channels[channel].blocks.slice(-1)[0].messages.push( // On ajoute un message au bloc
       {
-        type: "msg",
-        time: new Date(),
-        text: message
+        "type": type,
+        "time": time,
+        "text": text
       }
     );
-  } else {
-    scope.channels[channel].blocks.push(
+  } else { // Sinon si c'est le tout premier message ou que l'user ne concorde pas avec le dernier ayant dit quelque chose
+    scope.channels[channel].blocks.push( // On crée un nouveau bloc auquel on ajoute un nouveau message
       {
-        user: sender,
-        messages: [
+        "user": user,
+        "messages": [
           {
-            type: "msg",
-            time: new Date(),
-            text: message
+            "type": type,
+            "time": time,
+            "text": text
           }
         ]
       }

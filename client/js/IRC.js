@@ -62,7 +62,6 @@ var IRC = function IRC(nickname, password, callback) {
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2];
                             var msg = linex.slice(3).join(" ").slice(1);
-
                             onPrivMsg(sender, channel, msg)
                             break;
 
@@ -74,7 +73,7 @@ var IRC = function IRC(nickname, password, callback) {
                             // :127.0.0.1 333 Julien00859 #Dev Julien008!Julien@94.111.231.0 1453514793
                             // :127.0.0.1 353 Julien = #Dev :Juilen @Julien008 jsfljdflkjkflsj
                             //                              [^^^^^^,^^^^^^^^^^,^^^^^^^^^^^^^^^]
-                            // :127.0.0.1 366 jsfljdflkjkflsj #Dev :End of /NAMES list.
+                            // :127.0.0.1 366 Julien00859 #Dev :End of /NAMES list.
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2].slice(1);
 
@@ -94,7 +93,6 @@ var IRC = function IRC(nickname, password, callback) {
                                 break;
                               }
                             }
-
                             onJoin(sender, channel, topic, names);
                             break;
 
@@ -105,6 +103,7 @@ var IRC = function IRC(nickname, password, callback) {
                             var channel = linex[2];
                             var target = linex[3];
                             var kickMessage = linex.slice(4).join(" ").slice(1);
+                            onKick(channel, target, kickMessage);
                             break;
 
                         case "PART":
@@ -113,6 +112,7 @@ var IRC = function IRC(nickname, password, callback) {
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var channel = linex[2];
                             var partMessage = linex.slice(3).join(" ").slice(1);
+                            onPart(sender, channel, partMessage);
                             break;
 
                         case "QUIT":
@@ -120,6 +120,7 @@ var IRC = function IRC(nickname, password, callback) {
                             //  ^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                             var sender = linex[0].slice(1, linex[0].indexOf("!"));
                             var quitMessage = linex.slice(3).join(" ");
+                            onQuit(sender, quitMessage);
                             break;
 
                         case "MODE":
@@ -129,6 +130,7 @@ var IRC = function IRC(nickname, password, callback) {
                             var channel = linex[2];
                             var mode = linex[3];
                             var target = linex[4];
+                            onMode(sender, channel, mode, target);
                             break;
                     }
                 }
