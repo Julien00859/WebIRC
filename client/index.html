@@ -42,12 +42,14 @@
 					</div>
 					<div ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
 						<h3 class="user" ng-bind="block.user"></h3> <!-- Une fois son auteur -->
-						<p class="message-l"
-							 ng-repeat="message in block.messages"
-							 ng-bind="message.text"
-							 ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
-							 ng-class="getMessageType(message.type);">
-						</p> <!-- Et chaque message -->
+						<div class="message-l">
+							<p
+								 ng-repeat="message in block.messages"
+								 ng-bind="message.text"
+								 ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
+								 ng-class="getMessageType(message.type);">
+							</p> <!-- Et chaque message -->
+						</div>
 					</div>
 				</section>
 			</main>
