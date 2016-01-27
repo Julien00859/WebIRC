@@ -13,13 +13,15 @@
 		<!-- Nos fichiers CSS -->
 		<link href="css/sprites.css" rel="stylesheet" type="text/css">
 		<link href="css/style.css" rel="stylesheet" type="text/css">
-		<link rel="stylesheet" media="screen" href="css/responsive.css" type="text/css" />
+		<link href="css/input.css "rel="stylesheet" type="text/css">
+		<link rel="stylesheet" media="screen" href="css/responsive.css" type="text/css">
 
 		<!-- Dépendances JavaScript -->
 		<script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.js" type="text/javascript"> // AngularJS </script>
 		<script src="http://underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>
 		<script src="https://cdn.socket.io/socket.io-1.4.3.js"> // Socket.io </script>
+		<script src="js/classie.js"> // Ajout de classes </script>
 
 		<!-- Nos scripts -->
 		<script src="js/main.js" type="text/javascript"></script>
@@ -31,17 +33,11 @@
 
 			<header>
 				<h1>Web IRC</h1><span id="titre">//
-				<!--<span id="date" ng-bind='currentDate | "DD:MM:YYYY" "HH:mm"'></span>--></span>
+				<span id="date" ng-bind='date | date:"medium"'></span></span>
 			</header>
 
 			<main id=chatbox ng-show="currentChannel">
-				<nav  ng-repeat="channel in channels">
-					Salons :
-					<ul>
-						<li ng-bind="channel.name"><!-- Affiche la liste des channels --></li>
-					</ul>
-				</nav>
-				<section ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- Pour chaque salon -->
+				<section ng-repeat="channel in channels" ng-show="isCurrentChannel(channel.name)"> <!-- Pour chaque salon -->
 					<div> <!-- On affiche le salon et son topic -->
 						<p>{{channel.topic}}</p>
 					</div>
@@ -92,125 +88,156 @@
 			<footer>
 				<p>WebIRC Client by Rousseau Mathieu &amp; Castiaux Julien</p>
 			</footer>
-
-			<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
-				<caption>Liste des smileys disponible</caption>
-				<tr>
-					<td class="sprites" name=":)"></td>
-					<td class="sprites" name=":("></td>
-					<td class="sprites" name=":D"></td>
-					<td class="sprites" name="xD"></td>
-					<td class="sprites" name="(cool)"></td>
-					<td class="sprites" name=":o"></td>
-					<td class="sprites" name=";)"></td>
-					<td class="sprites" name="(chuckle)"></td>
-					<td class="sprites" name=":'("></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(fear)"></td>
-					<td class="sprites" name=":|"></td>
-					<td class="sprites" name="(kiss)"></td>
-					<td class="sprites" name=":p"></td>
-					<td class="sprites" name=":$"></td>
-					<td class="sprites" name="(wait)"></td>
-					<td class="sprites" name="(angel)"></td>
-					<td class="sprites" name=":x"></td>
-					<td class="sprites" name="(devil)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(wasntme)"></td>
-					<td class="sprites" name="(party)"></td>
-					<td class="sprites" name=":@"></td>
-					<td class="sprites" name="(doh)"></td>
-					<td class="sprites" name="]:)"></td>
-					<td class="sprites" name="(yawn)"></td>
-					<td class="sprites" name="(inlove)"></td>
-					<td class="sprites" name=":^)"></td>
-					<td class="sprites" name="(idontcare)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(heidy)"></td>
-					<td class="sprites" name="<3"></td>
-					<td class="sprites" name="(star)"></td>
-					<td class="sprites" name="(handshake)"></td>
-					<td class="sprites" name="(n)"></td>
-					<td class="sprites" name="(y)"></td>
-					<td class="sprites" name="(emo)"></td>
-					<td class="sprites" name="(clap)"></td>
-					<td class="sprites" name="(rofl)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(bug)"></td>
-					<td class="sprites" name="(headbang)"></td>
-					<td class="sprites" name="(clock)"></td>
-					<td class="sprites" name="(punch)"></td>
-					<td class="sprites" name="(drunk)"></td>
-					<td class="sprites" name="(smartphone)"></td>
-					<td class="sprites" name="(film)"></td>
-					<td class="sprites" name="(mail)"></td>
-					<td class="sprites" name="(brokenheart)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(cake)"></td>
-					<td class="sprites" name="(music)"></td>
-					<td class="sprites" name="($)"></td>
-					<td class="sprites" name="(pizza)"></td>
-					<td class="sprites" name="(cafe)"></td>
-					<td class="sprites" name="(sun)"></td>
-					<td class="sprites" name="(flex)"></td>
-					<td class="sprites" name="(tmi)"></td>
-					<td class="sprites" name="(flower)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(skome)"></td>
-					<td class="sprites" name="(rain)"></td>
-					<td class="sprites" name="(whew)"></td>
-					<td class="sprites" name="(shake)"></td>
-					<td class="sprites" name="(bow)"></td>
-					<td class="sprites" name="(think)"></td>
-					<td class="sprites" name="(call)"></td>
-					<td class="sprites" name="(tumbleweed)"></td>
-					<td class="sprites" name="(beer)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(nerd)"></td>
-					<td class="sprites" name="(hi)"></td>
-					<td class="sprites" name="(mm)"></td>
-					<td class="sprites" name="(puke)"></td>
-					<td class="sprites" name="(worry)"></td>
-					<td class="sprites" name="(facepalm)"></td>
-					<td class="sprites" name="(dance)"></td>
-					<td class="sprites" name="(bandit)"></td>
-					<td class="sprites" name="(drink)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="|-)"></td>
-					<td class="sprites" name="(ninja)"></td>
-					<td class="sprites" name="(girl)"></td>
-					<td class="sprites" name="(hug)"></td>
-					<td class="sprites" name="(yn)"></td>
-					<td class="sprites" name="(envy)"></td>
-					<td class="sprites" name="(talktothehand)"></td>
-					<td class="sprites" name="(cat)"></td>
-					<td class="sprites" name="(idea)"></td>
-				</tr>
-				<tr>
-					<td class="sprites" name="(rock)"></td>
-					<td class="sprites" name="(poolparty)"></td>
-				</tr>
-			</table>
-		</div>
+    </div>
 
 		<aside>
 			<h1 id="titreAside">Connecté(s)</h1>
 			<section id="userConnected">
-          <div ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- On affiche la liste des utilisateurs -->
+          <div ng-repeat="channel in channels" ng-show="isCurrentChannel(channel.name)"> <!-- On affiche la liste des utilisateurs -->
 						<ul class="Everyone">
 							<li ng-repeat="user in channel.users" ng-bind="user"></li>
 						</ul>
 					</div>
 			</section>
+			<nav >
+				<ul>
+					<!--<input ng-model="newChan" ng-keypress="($event.which === 13)?joinChannel(newChan):0;" ng-pattern="/^\#[A-Za-z0-9]{1,}$/" placeholder="Type the new #Channel here">-->
+					<span class="input input--kaede">
+						<input class="input__field input__field--kaede" type="text" id="input-35" input ng-model="newChan" ng-keypress="($event.which === 13)?joinChannel(newChan):0;" ng-pattern="/^\#[A-Za-z0-9]{1,}$/" placeholder="Type the new #Channel here">
+						<label class="input__label input__label--kaede" for="input-35">
+							<span class="input__label-content input__label-content--kaede">Channel</span>
+						</label>
+					</span>
+					<li ng-click="joinChannel(channel.name)" ng-repeat="channel in channels" ng-class="getNavChannelClass(channel.name)" ng-bind="channel.name"><!-- Affiche la liste des channels --></li>
+				</ul>
+			</nav>
 		</aside>
 
+		<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
+			<caption>Liste des smileys disponible</caption>
+			<tr>
+				<td class="sprites" name=":)"></td>
+				<td class="sprites" name=":("></td>
+				<td class="sprites" name=":D"></td>
+				<td class="sprites" name="xD"></td>
+				<td class="sprites" name="(cool)"></td>
+				<td class="sprites" name=":o"></td>
+				<td class="sprites" name=";)"></td>
+				<td class="sprites" name="(chuckle)"></td>
+				<td class="sprites" name=":'("></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(fear)"></td>
+				<td class="sprites" name=":|"></td>
+				<td class="sprites" name="(kiss)"></td>
+				<td class="sprites" name=":p"></td>
+				<td class="sprites" name=":$"></td>
+				<td class="sprites" name="(wait)"></td>
+				<td class="sprites" name="(angel)"></td>
+				<td class="sprites" name=":x"></td>
+				<td class="sprites" name="(devil)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(wasntme)"></td>
+				<td class="sprites" name="(party)"></td>
+				<td class="sprites" name=":@"></td>
+				<td class="sprites" name="(doh)"></td>
+				<td class="sprites" name="]:)"></td>
+				<td class="sprites" name="(yawn)"></td>
+				<td class="sprites" name="(inlove)"></td>
+				<td class="sprites" name=":^)"></td>
+				<td class="sprites" name="(idontcare)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(heidy)"></td>
+				<td class="sprites" name="<3"></td>
+				<td class="sprites" name="(star)"></td>
+				<td class="sprites" name="(handshake)"></td>
+				<td class="sprites" name="(n)"></td>
+				<td class="sprites" name="(y)"></td>
+				<td class="sprites" name="(emo)"></td>
+				<td class="sprites" name="(clap)"></td>
+				<td class="sprites" name="(rofl)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(bug)"></td>
+				<td class="sprites" name="(headbang)"></td>
+				<td class="sprites" name="(clock)"></td>
+				<td class="sprites" name="(punch)"></td>
+				<td class="sprites" name="(drunk)"></td>
+				<td class="sprites" name="(smartphone)"></td>
+				<td class="sprites" name="(film)"></td>
+				<td class="sprites" name="(mail)"></td>
+				<td class="sprites" name="(brokenheart)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(cake)"></td>
+				<td class="sprites" name="(music)"></td>
+				<td class="sprites" name="($)"></td>
+				<td class="sprites" name="(pizza)"></td>
+				<td class="sprites" name="(cafe)"></td>
+				<td class="sprites" name="(sun)"></td>
+				<td class="sprites" name="(flex)"></td>
+				<td class="sprites" name="(tmi)"></td>
+				<td class="sprites" name="(flower)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(skome)"></td>
+				<td class="sprites" name="(rain)"></td>
+				<td class="sprites" name="(whew)"></td>
+				<td class="sprites" name="(shake)"></td>
+				<td class="sprites" name="(bow)"></td>
+				<td class="sprites" name="(think)"></td>
+				<td class="sprites" name="(call)"></td>
+				<td class="sprites" name="(tumbleweed)"></td>
+				<td class="sprites" name="(beer)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(nerd)"></td>
+				<td class="sprites" name="(hi)"></td>
+				<td class="sprites" name="(mm)"></td>
+				<td class="sprites" name="(puke)"></td>
+				<td class="sprites" name="(worry)"></td>
+				<td class="sprites" name="(facepalm)"></td>
+				<td class="sprites" name="(dance)"></td>
+				<td class="sprites" name="(bandit)"></td>
+				<td class="sprites" name="(drink)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="|-)"></td>
+				<td class="sprites" name="(ninja)"></td>
+				<td class="sprites" name="(girl)"></td>
+				<td class="sprites" name="(hug)"></td>
+				<td class="sprites" name="(yn)"></td>
+				<td class="sprites" name="(envy)"></td>
+				<td class="sprites" name="(talktothehand)"></td>
+				<td class="sprites" name="(cat)"></td>
+				<td class="sprites" name="(idea)"></td>
+			</tr>
+			<tr>
+				<td class="sprites" name="(rock)"></td>
+				<td class="sprites" name="(poolparty)"></td>
+			</tr>
+		</table>
+		<script>
+				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach(function(inputEl) {
+					// in case the input is already filled..
+					if( inputEl.value.trim() !== '' ) {
+						classie.add( inputEl.parentNode, 'input--filled' );
+					}
+					// events:
+					inputEl.addEventListener( 'focus', onInputFocus );
+					inputEl.addEventListener( 'blur', onInputBlur );
+				});
+
+				function onInputFocus( ev ) {
+					classie.add( ev.target.parentNode, 'input--filled' );
+				}
+				function onInputBlur( ev ) {
+					if( ev.target.value.trim() === '' ) {
+						classie.remove( ev.target.parentNode, 'input--filled' );
+					}
+				};
+		</script>
 	</body>
 </html>

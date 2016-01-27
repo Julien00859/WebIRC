@@ -38,7 +38,8 @@ nav {
   color: lightgray;
 }
 nav > ul {
-  margin: 5px 0;
+  margin: 5px;
+  text-align: left;
 }
 #titre {
   display: inline-block;
@@ -149,4 +150,30 @@ footer {
 .typeJoin, .typeKick, .typeQuit, .typePart, .typeMode {
   font-family : 'Share Tech';
   font-style: italic;
+}
+.activeNavChannel {
+  color: #242424;
+}
+nav li {
+  margin: 10px 0;
+  display: block;
+  text-decoration: none;
+  color: #777;
+  padding: 0 10px;
+  font-size: 25px;
+  font-family: 'Oswald';
+  border-radius: 2px;
+  height: 40px;
+  text-align: center;
+  background-color: #ecf0f1;
+  box-shadow: inset 0px 0px 5px #000000;
+  -o-transition: color 0.5s linear;
+  -moz-transition: color 0.5s linear;
+  -khtml-transition: color 0.5s linear;
+  -webkit-transition: color 0.5s linear;
+  -ms-transition: color 0.5s linear;
+  transition: color 0.5s linear;
+  }
+nav li:hover {
+  color: #242424;
 }

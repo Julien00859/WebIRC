@@ -2,9 +2,22 @@
 var main = angular.module("main", ["chatIrc"]);
 // Dépendance du module principale
 var chatIrc = angular.module("chatIrc", []);
+// Ajoute le ng-enter-key
+chatIrc.directive('ngEnterKey', function () {
+    return function (scope, element, attrs) {
+        element.bind("keydown keypress", function (event) {
+            if(event.which === 13) {
+                scope.$apply(function (){
+                    scope.$eval(attrs.ngEnter);
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});
 // Controlleur du module chatIrc
-chatIrc.controller("fieldsController", function($scope) {
-  var self = this;
+chatIrc.controller("fieldsController", function($scope, $interval) {
   $scope.channels = { // Liste des salons
 // #Dev: { // Un salon en particulier
 //    name: String(), // Son nom
@@ -40,6 +53,8 @@ chatIrc.controller("fieldsController", function($scope) {
 
   $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
 
+  $interval(function(){$scope.date = new Date()}, 1000 * 60);
+
   // Fonction pour s'enregistrer sur le serveur IRC
   $scope.register = function register(event) {
     $scope.me.connected = true;
@@ -73,9 +88,22 @@ chatIrc.controller("fieldsController", function($scope) {
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
+  $scope.joinChannel = function joinChannel(channel) {
+    console.log("Enter ! " + channel)
+    if (channel in $scope.channels) { // Active le salon
+      $scope.currentChannel = channel;
+
+    } else if (!(channel in $scope.channels) && channel[0] == "#") { // Rejoint le salon, il sera activé une fois rejoint
+      $scope.irc.sendCommand("JOIN " + channel);
+
+    } else { // On rejette
+      alert("Operation rejected !")
+    }
+  }
+
   // Fonction qui retourne true si le salon passé en argument est le salon actif
   $scope.isCurrentChannel = function isCurrentChannel(channel) {
-    return channel == $scope.currentChannel;
+    return (channel == $scope.currentChannel);
   }
 
   // Fonction qui retourne la classe d'un message selon le type passé en argument
@@ -87,6 +115,12 @@ chatIrc.controller("fieldsController", function($scope) {
       typeQuit: type == "quit",
       typePart: type == "part",
       typeMode: type == "mode"
+    }
+  }
+
+  $scope.getNavChannelClass = function getNavChannelClass(channel) {
+    return {
+      activeNavChannel: channel == $scope.currentChannel
     }
   }
 

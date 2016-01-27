@@ -67,6 +67,10 @@ socketio.on("connection", function(socket){
             }
         });
 
+        socket.irc.server.on("close", function(){
+          if (socket.close) socket.close();
+        })
+
         // Une commande "normale" à envoyer au réseau IRC (join, part, privmsg, kick, ...)
         socket.on("command", function(cmd){
             socket.irc.server.write(cmd + "\r\n");
@@ -93,6 +97,10 @@ socketio.on("connection", function(socket){
             console.log('user disconnected');
             // On kill le socket tout en envoyant le message propice au serveur IRC
             socket.irc.server.end("QUIT :Page closed");
+        });
+
+        socket.on("close", function(error){
+          socket.irc.end("QUIT :Error: " + error);
         });
     });
 });
