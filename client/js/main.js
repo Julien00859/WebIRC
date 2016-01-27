@@ -2,20 +2,6 @@
 var main = angular.module("main", ["chatIrc"]);
 // Dépendance du module principale
 var chatIrc = angular.module("chatIrc", []);
-// Ajoute le ng-enter-key
-chatIrc.directive('ngEnterKey', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if(event.which === 13) {
-                scope.$apply(function (){
-                    scope.$eval(attrs.ngEnter);
-                });
-
-                event.preventDefault();
-            }
-        });
-    };
-});
 // Controlleur du module chatIrc
 chatIrc.controller("fieldsController", function($scope, $interval) {
   $scope.channels = { // Liste des salons
@@ -125,12 +111,18 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
   }
 
   // Fonction qui returne la classe d'un utilisateur en fonction du prefix du nickname passé en argument
-    $scope.getUserModeClass = function getUserModeClass(user) {
+  $scope.getUserModeClass = function getUserModeClass(user) {
     return {
       modeUser: user[0] != "+" && user[0] != "%" && user[0] != "@",
       modeVoice: user[0] == "+",
       modeHalfOP: user[0] == "%",
       modeOP: user[0] == "@"
+    }
+  }
+
+  $scope.getMessageSenderClass = function getMessageSenderClass(user) {
+    return {
+      messageByMe: user == $scope.me.nickname;
     }
   }
 });
