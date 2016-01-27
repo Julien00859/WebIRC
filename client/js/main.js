@@ -68,7 +68,7 @@ chatIrc.controller("fieldsController", function($scope) {
   // Fonction pour envoyer un message (commande PRIVMSG) sur le salon courant
   $scope.sendMessage = function sendMessage(event) {
     $scope.irc.sendMessage($scope.currentChannel, $scope.message); // Envoit le message au serveur IRC
-    addText($scope, $scope.currentChannel, $scope.me.nickname, "msg", new Date(), $scope.message); // Ajoute le texte sur la page HTML
+    addText($scope.channels, $scope.currentChannel, $scope.me.nickname, "msg", new Date(), $scope.message); // Ajoute le texte sur la page HTML
     $scope.message = ""; // Retire le text de la textarea
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
@@ -116,7 +116,7 @@ function onJoin(sender, channel, topic, names) {
   if (sender != scope.me.nickname) { // Lorsqu'un utilisateur rejoint un salon sur lequel on est présent
     scope.channels[channel].users.push(sender); // On l'ajoute simplement à la liste des utilisateurs connectés au salon
   } else { // Lorsque c'est l'utilisateur qui rejoint un salon
-    $scope.currentChannel = channel; // On le défini comme salon actif
+    scope.currentChannel = channel; // On le défini comme salon actif
     if (typeof topic != undefined) scope.channels[channel].topic = topic; // On ajoute le topic
     if (typeof names != undefined) scope.channels[channel].users = new Array().concat(names.split(" ").filter(function(name){return name != ""})); // On ajoute la liste des utilisateurs
   }
@@ -138,36 +138,41 @@ function onJoin(sender, channel, topic, names) {
 
 function onPrivMsg(sender, channel, message) {
   var scope = angular.element(document.body).scope();
-  if (channel in $scope.channels) addText(scope, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
-  else if (channel == $scope.me.nickname) { // Sinon, si le salon n'existe pas encore (lors du démarrage du convo privé)
+  if (channel in scope.channels) addText(scope.channels, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
+  else if (channel == scope.me.nickname) { // Sinon, si le salon n'existe pas encore (lors du démarrage du convo privé)
     scope.channels[sender] =  { // On crée la mapping de base pour un salon
       name: sender,
-      users: [sender, $scope.me.nickname],
+      users: [sender, scope.me.nickname],
       topic: "Message privé avec " + sender,
       blocks: []
     }
-    addText(scope, sender, sender, "msg", new Date(), message); // On écrit le message
+    addText(scope.channels, sender, sender, "msg", new Date(), message); // On écrit le message
   }
+  scope.$apply();
 }
 
 function onQuit(sender, message) {
   var scope = angular.element(document.body).scope();
   Object.keys(scope.channels).forEach(function(channel){
-    addText(scope, channel, sender, "quit", new Date(), sender + " a quitté le serveur: \"" + message + "\"");
+    addText(scope.channels, channel, sender, "quit", new Date(), sender + " a quitté le serveur: \"" + message + "\"");
     scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
+    scope.$apply();
   });
 }
 
 function onPart(sender, channel, message) {
   var scope = angular.element(document.body).scope();
-  addText(scope, channel, sender, "part", new Date(), sender + " a quitté le salon: \"" + message + "\"");
+  addText(scope.channels, channel, sender, "part", new Date(), sender + " a quitté le salon: \"" + message + "\"");
   scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
+  scope.$apply();
 }
 
 function onKick(sender, channel, target, message) {
+  console.log("sender:" + sender + ",channel:" + channel + ",target:" + target + ",message:" + message);
   var scope = angular.element(document.body).scope();
-  addText(scope, channel, sender, "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\"");
+  addText(scope.channels, channel, sender, "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\"");
   scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(target), 1);
+  scope.$apply();
 }
 
 function onMode(sender, channel, mode, target) {
@@ -178,9 +183,9 @@ function onMode(sender, channel, mode, target) {
   });
 }
 
-function addText(scope, channel, user, type, time, text) {
-  if (scope.channels[channel].blocks.length > 0 && scope.channels[channel].blocks.slice(-1)[0].user == sender) { // Si ce n'est pas le premier message et que l'user concorde avec le dernier ayant écrit quelque chose
-    scope.channels[channel].blocks.slice(-1)[0].messages.push( // On ajoute un message au bloc
+function addText(channels, channel, user, type, time, text) {
+  if (channels[channel].blocks.length > 0 && channels[channel].blocks.slice(-1)[0].user == user) { // Si ce n'est pas le premier message et que l'user concorde avec le dernier ayant écrit quelque chose
+    channels[channel].blocks.slice(-1)[0].messages.push( // On ajoute un message au bloc
       {
         "type": type,
         "time": time,
@@ -188,7 +193,7 @@ function addText(scope, channel, user, type, time, text) {
       }
     );
   } else { // Sinon si c'est le tout premier message ou que l'user ne concorde pas avec le dernier ayant dit quelque chose
-    scope.channels[channel].blocks.push( // On crée un nouveau bloc auquel on ajoute un nouveau message
+    channels[channel].blocks.push( // On crée un nouveau bloc auquel on ajoute un nouveau message
       {
         "user": user,
         "messages": [
@@ -201,5 +206,4 @@ function addText(scope, channel, user, type, time, text) {
       }
     );
   }
-  scope.$apply();
 }

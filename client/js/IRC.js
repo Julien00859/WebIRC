@@ -103,7 +103,7 @@ var IRC = function IRC(nickname, password, callback) {
                             var channel = linex[2];
                             var target = linex[3];
                             var kickMessage = linex.slice(4).join(" ").slice(1);
-                            onKick(channel, target, kickMessage);
+                            onKick(sender, channel, target, kickMessage);
                             break;
 
                         case "PART":
