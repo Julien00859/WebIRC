@@ -148,4 +148,5 @@ footer {
 }
 .typeJoin, .typeKick, .typeQuit, .typePart, .typeMode {
   font-family : 'Share Tech';
+  font-style: italic;
 }
