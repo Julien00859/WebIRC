@@ -26,16 +26,21 @@
 		<script src="js/IRC.js"></script>
 
 	</head>
-	<body ng-controller="fieldsController as ctrl" ng-init=initPage()>
+	<body ng-controller="fieldsController as ctrl">
 		<div class="ircChat">
 
 			<header>
 				<h1>Web IRC</h1><span id="titre">//
-        <span ng-repeat="channel in channels">Salons : {{channel.name}} | <!-- Affiche la liste des channels -->
-        </span><span id="date"><!--{{currentDate | "DD:MM:YYYY" "HH:mm"}}--></span></span>
+				<!--<span id="date" ng-bind='currentDate | "DD:MM:YYYY" "HH:mm"'></span>--></span>
 			</header>
 
-			<main id=chatbox>
+			<main id=chatbox ng-show="currentChannel">
+				<nav  ng-repeat="channel in channels">
+					Salons :
+					<ul>
+						<li ng-bind="channel.name"><!-- Affiche la liste des channels --></li>
+					</ul>
+				</nav>
 				<section ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- Pour chaque salon -->
 					<div> <!-- On affiche le salon et son topic -->
 						<p>{{channel.topic}}</p>
@@ -62,11 +67,11 @@
 					</p>
 					<p>
 						<label for=password>Password :</label>
-						<input type=text ng-model="me.password" placeholder="password">
+						<input type=password ng-model="me.password" placeholder="password">
 					</p>
 					<p>
 						<label for=joinChannel>Auto-Join-Channel : </label>
-						<textarea ng-model="me.autoChannels" placeholder="channels" required></textarea>
+						<textarea ng-model="me.autoChannels" placeholder="channels"></textarea>
 					</p>
 					<p>
 						<label for=joinCommand>Auto-Join-Command : </label>
@@ -199,7 +204,7 @@
 		<aside>
 			<h1 id="titreAside">Connecté(s)</h1>
 			<section id="userConnected">
-          <div> <!-- On affiche la liste des utilisateurs -->
+          <div ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- On affiche la liste des utilisateurs -->
 						<ul class="Everyone">
 							<li ng-repeat="user in channel.users" ng-bind="user"></li>
 						</ul>
