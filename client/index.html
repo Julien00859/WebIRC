@@ -52,7 +52,7 @@
 								 ng-repeat="message in block.messages"
 								 ng-bind="message.text"
 								 ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
-								 ng-class="getMessageType(message.type);">
+								 ng-class="getMessageTypeClass(message.type);">
 							</p> <!-- Et chaque message -->
 						</div>
 					</div>

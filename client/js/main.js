@@ -79,7 +79,7 @@ chatIrc.controller("fieldsController", function($scope) {
   }
 
   // Fonction qui retourne la classe d'un message selon le type passé en argument
-  $scope.getMessageTypeClass = function getMessageType(type) {
+  $scope.getMessageTypeClass = function getMessageTypeClass(type) {
     return {
       typeMsg: type == "msg",
       typeJoin: type == "join",
