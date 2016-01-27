@@ -2,11 +2,14 @@
   font-family: Roboto;
   font-size: 1em;
 }
+html {
+  display: inline-flex;
+}
 body {
   max-width: 1105px;
   max-height: 1350px;
-  margin: 0 25%;
-  display: inline-flex;
+  margin: auto;
+  /*display: inline-flex;*/
 }
 .ircChat {
   box-sizing: border-box;
@@ -80,7 +83,6 @@ ul {
   margin-top: 0;
   /*line-height: 25px;*/
   border-radius: 0 5px 5px 5px;
-  margin-bottom: 30px;
   /*width: 85%;*/
 }
 .inputText {
@@ -143,4 +145,7 @@ footer {
   color: #2c3e50;
   font-family: Oswald;
   text-align: center;
+}
+.typeJoin, .typeKick, .typeQuit, .typePart, .typeMode {
+  font-family : 'Share Tech';
 }
