@@ -26,31 +26,23 @@
 		<script src="js/IRC.js"></script>
 
 	</head>
-	<body ng-controller="fieldsController as ctrl">
+	<body ng-controller="fieldsController as ctrl" ng-init=initPage()>
 		<div class="ircChat">
 
-
 			<header>
-				<h1>Web IRC</h1><span id="titre">// <span ng-show="">Salons : {{}} | </span><span id="date"></span></span>
+				<h1>Web IRC</h1><span id="titre">//
+        <span ng-repeat="channel in channels">Salons : {{channel.name}} | <!-- Affiche la liste des channels -->
+        </span><span id="date"><!--{{currentDate | "DD:MM:YYYY" "HH:mm"}}--></span></span>
 			</header>
+
 			<main id=chatbox>
-				<nav>
-					<ul>
-						<li ng-repeat="channel in channels" ng-bind="channel.name"></li> <!-- Affiche la liste des channels -->
-					</ul>
-				</nav>
 				<section ng-repeat="channel in channels" ng-class="getActiveChannelClass(currentChannel)"> <!-- Pour chaque salon -->
 					<div> <!-- On affiche le salon et son topic -->
 						<p>{{channel.topic}}</p>
 					</div>
-					<div> <!-- On affiche la liste des utilisateurs -->
-						<ul>
-							<li ng-repeat="user in channel.users" ng-bind="user"></li>
-						</ul>
-					</div>
 					<div ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
-						<h3 ng-class="user" ng-bind="block.user"></h3> <!-- Une fois son auteur -->
-						<p  ng-class="message-l"
+						<h3 class="user" ng-bind="block.user"></h3> <!-- Une fois son auteur -->
+						<p class="message-l"
 							 ng-repeat="message in block.messages"
 							 ng-bind="message.text"
 							 ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
@@ -64,11 +56,11 @@
 				<fieldset class="fields">
 					<p>
 						<label for=nickname>Nickname :</label>
-						<input ng-model="me.nickname" placeholder="nickname" required>
+						<input type=text ng-model="me.nickname" placeholder="nickname" required>
 					</p>
 					<p>
 						<label for=password>Password :</label>
-						<input ng-model="me.password" placeholder="password">
+						<input type=text ng-model="me.password" placeholder="password">
 					</p>
 					<p>
 						<label for=joinChannel>Auto-Join-Channel : </label>
@@ -88,10 +80,11 @@
 					<input type=submit>
 				</fieldset>
 			</form>
+      <hr>
+
 			<footer>
 				<p>WebIRC Client by Rousseau Mathieu &amp; Castiaux Julien</p>
 			</footer>
-
 
 			<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
 				<caption>Liste des smileys disponible</caption>
@@ -200,13 +193,17 @@
 				</tr>
 			</table>
 		</div>
+
 		<aside>
 			<h1 id="titreAside">Connecté(s)</h1>
 			<section id="userConnected">
-				<ul class="Everyone">
-					<li><span>User : </span><span> | Channel : </span></li>
-				</ul>
+          <div> <!-- On affiche la liste des utilisateurs -->
+						<ul class="Everyone">
+							<li ng-repeat="user in channel.users" ng-bind="user"></li>
+						</ul>
+					</div>
 			</section>
 		</aside>
+
 	</body>
 </html>
