@@ -70,7 +70,7 @@ socketio.on("connection", function(socket){
         socket.irc.server.on("close", function(){
           try {
             socket.close();
-          catch (e) {
+          } catch (e) {
             console.log(e)
           }
         })
@@ -102,7 +102,7 @@ socketio.on("connection", function(socket){
             // On kill le socket tout en envoyant le message propice au serveur IRC
             try {
               socket.irc.server.end("QUIT :Page closed");
-            catch (e) {
+            } catch (e) {
               console.log(e)
             }
         });
@@ -110,7 +110,7 @@ socketio.on("connection", function(socket){
         socket.on("close", function(error){
           try {
             socket.irc.end("QUIT :Error: " + error);
-          catch (e) {
+          } catch (e) {
             console.log(e);
           }
         });
