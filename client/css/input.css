@@ -1,7 +1,4 @@
 /* http://tympanus.net/codrops/2015/01/08/inspiration-text-input-effects/ */
-* {
-	font-family: Lato;
-}
 .input {
 	position: relative;
 	z-index: 1;
