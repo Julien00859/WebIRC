@@ -195,7 +195,6 @@ function onPart(sender, channel, message) {
 }
 
 function onKick(sender, channel, target, message) {
-  console.log("sender:" + sender + ",channel:" + channel + ",target:" + target + ",message:" + message);
   var scope = angular.element(document.body).scope();
   addText(scope.channels, channel, sender, "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\"");
   scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(target), 1);
