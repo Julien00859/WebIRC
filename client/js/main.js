@@ -122,7 +122,8 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 
   $scope.getMessageSenderClass = function getMessageSenderClass(user) {
     return {
-      messageByMe: user == $scope.me.nickname;
+      messageByMe: user == $scope.me.nickname,
+      messageNotByMe: user != $scope.me.nickname
     }
   }
 });
