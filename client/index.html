@@ -39,7 +39,7 @@
 			<main id=chatbox ng-show="currentChannel">
 				<section ng-repeat="channel in channels" ng-show="isCurrentChannel(channel.name)"> <!-- Pour chaque salon -->
 					<h2 ng-bind="channel.topic"></h2>
-					<div ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
+					<div class=block ng-repeat="block in channel.blocks"> <!-- Pour chaque bloc de messages -->
 						<h3 class="user" ng-bind="block.user"></h3> <!-- Une fois son auteur -->
 						<div ng-class="getMessageSenderClass(block.user)">
 							<p
@@ -109,6 +109,9 @@
 					<li ng-click="joinChannel(channel.name)" ng-repeat="channel in channels" ng-class="getNavChannelClass(channel.name)" ng-bind="channel.name"><!-- Affiche la liste des channels --></li>
 				</ul>
 			</nav>
+				<h3 id=options>Options :</h3>
+				<label id=autoscroll>Défilement auto</label>
+				<input id=autoscrollcheck type="checkbox" ng-model="options.scroll">
 		</aside>
 
 		<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
