@@ -50,8 +50,7 @@ nav > ul {
 }
 #chatbox {
   border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  height: 800px;
+  height: 620px;
   padding: 20px;
   margin-bottom: 5px;
   overflow: auto;
@@ -87,6 +86,7 @@ ul {
   /*line-height: 25px;*/
   border-radius: 0 5px 5px 5px;
   /*width: 85%;*/
+  word-wrap: break-word;
 }
 .messageNotByMe {
   background-color: #2980b9;
@@ -95,6 +95,7 @@ ul {
   /*line-height: 25px;*/
   border-radius: 0 5px 5px 5px;
   /*width: 85%;*/
+  word-wrap: break-word;
 }
 .inputText {
   padding: 1em 0;
@@ -160,6 +161,7 @@ footer {
 .typeJoin, .typeKick, .typeQuit, .typePart, .typeMode {
   font-family : 'Share Tech';
   font-style: italic;
+  text-align: center;
 }
 .activeNavChannel {
   color: #242424;
@@ -201,4 +203,21 @@ nav li:hover {
 }
 .Everyone {
   font-family: 'Arial Black';
+}
+.messageBySystem {
+  color: black;
+}
+.typeRaw {
+  font-family: courrier;
+}
+#options {
+  color: white;
+  margin-bottom: 8px;
+}
+#autoscroll {
+  color: white;
+}
+#autoscrollcheck {
+  position: relative;
+  top: 3px;
 }
