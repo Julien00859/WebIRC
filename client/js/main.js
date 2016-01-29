@@ -5,25 +5,23 @@ var chatIrc = angular.module("chatIrc", []);
 // Controlleur du module chatIrc
 chatIrc.controller("fieldsController", function($scope, $interval) {
   $scope.channels = { // Liste des salons
-// #Dev: { // Un salon en particulier
-//    name: String(), // Son nom
-//    topic: String(), // Le topic associé
-//    users: [ // La liste d'utilisateur dedans
-//      String() // Un utilisateur
-//    ],
-//    blocks: [ // La liste des blocks de message
-//      { // Un block de message (messages envoyés par la suite par un même utilisateur)
-//        user: String(), // L'utilisateur qui l'a envoyé
-//        messages: [ // La liste des messages
-//          { // Un message en particulier
-//            type: String(), // Le type du message (msg, kick, join, ...)
-//            time: Date(), // L'heure à laquelle le message a été envoyé
-//            text: String() // Le texte du message
-//          } // Fin message
-//        ] // Fin messages
-//      } // Fin block
-//    ] // Fin blocks
-//  }// Fin channel
+    "Console": { // Un salon en particulier
+      name: "Console", // Son nom
+      topic: "Gérer le serveur", // Le topic associé
+      users: [], // La liste d'utilisateur dans le channel
+      blocks: [ // La liste des blocks de message
+        { // Un block de message (messages envoyés par la suite par un même utilisateur)
+          user: new String(), // L'utilisateur qui l'a envoyé
+          messages: [ // La liste des messages
+            { // Un message en particulier
+              type: new String(), // Le type du message (msg, kick, join, ...)
+              time: new Date(), // L'heure à laquelle le message a été envoyé
+              text: new String() // Le texte du message
+            } // Fin message
+          ] // Fin messages
+        } // Fin block
+      ] // Fin blocks
+    }// Fin channel
   } // Fin object
 
   $scope.me = { // Infos de l'utilisateur actif sur la page
@@ -35,6 +33,10 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 //  autoCommands: [ // La liste des commandes à exécuter automatiquement
 //    String() // Une commande à exécuter une fois connecté
 //  ]
+  }
+
+  $scope.options = {
+    scroll: true
   }
 
   $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
@@ -68,14 +70,14 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 
   // Fonction pour envoyer un message (commande PRIVMSG) sur le salon courant
   $scope.sendMessage = function sendMessage(event) {
-    $scope.irc.sendMessage($scope.currentChannel, $scope.message); // Envoit le message au serveur IRC
+    if ($scope.currentChannel == "Console") $scope.irc.sendCommand($scope.message) // Envoit un message en console
+    else $scope.irc.sendMessage($scope.currentChannel, $scope.message); // Envoit le message au serveur IRC
     addText($scope.channels, $scope.currentChannel, $scope.me.nickname, "msg", new Date(), $scope.message); // Ajoute le texte sur la page HTML
     $scope.message = ""; // Retire le text de la textarea
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
   $scope.joinChannel = function joinChannel(channel) {
-    console.log("Enter ! " + channel)
     if (channel in $scope.channels) { // Active le salon
       $scope.currentChannel = channel;
 
@@ -100,10 +102,12 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       typeKick: type == "kick",
       typeQuit: type == "quit",
       typePart: type == "part",
-      typeMode: type == "mode"
+      typeMode: type == "mode",
+      typeRaw: type == "raw"
     }
   }
 
+  // Fonction qui retourne une classe spécifique au salon actif
   $scope.getNavChannelClass = function getNavChannelClass(channel) {
     return {
       activeNavChannel: channel == $scope.currentChannel
@@ -120,10 +124,12 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     }
   }
 
+  // Fonction qui retourne le type du block en fonction de l'user à l'avoir envoyé
   $scope.getMessageSenderClass = function getMessageSenderClass(user) {
     return {
+      messageBySystem: user == "", // Hardcodé pour les messages de type join, kick, part, ...
       messageByMe: user == $scope.me.nickname,
-      messageNotByMe: user != $scope.me.nickname
+      messageNotByMe: user != $scope.me.nickname && user != ""
     }
   }
 });
@@ -145,12 +151,12 @@ function onJoin(sender, channel, topic, names) {
   } else { // Lorsque c'est l'utilisateur qui rejoint un salon
     scope.currentChannel = channel; // On le défini comme salon actif
     if (typeof topic != undefined) scope.channels[channel].topic = topic; // On ajoute le topic
-    if (typeof names != undefined) scope.channels[channel].users = new Array().concat(names.split(" ").filter(function(name){return name != ""})); // On ajoute la liste des utilisateurs
+    if (typeof names != undefined) scope.channels[channel].users = names.split(" "); // On ajoute la liste des utilisateurs
   }
   // On affiche le message sur la page HTML
   scope.channels[channel].blocks.push(
     {
-      user: sender,
+      user: "",
       messages: [
         {
           type: "join",
@@ -160,11 +166,12 @@ function onJoin(sender, channel, topic, names) {
       ]
     }
   );
-  scope.$apply();
+  scope.$apply(); // On applique les changements sur la DOM
+  if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
 }
 
 function onPrivMsg(sender, channel, message) {
-  var scope = angular.element(document.body).scope();
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
   if (channel in scope.channels) addText(scope.channels, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
   else if (channel == scope.me.nickname) { // Sinon, si le salon n'existe pas encore (lors du démarrage du convo privé)
     scope.channels[sender] =  { // On crée la mapping de base pour un salon
@@ -173,42 +180,44 @@ function onPrivMsg(sender, channel, message) {
       topic: "Message privé avec " + sender,
       blocks: []
     }
-    addText(scope.channels, sender, sender, "msg", new Date(), message); // On écrit le message
+    addText(scope.channels, sender, sender, "msg", new Date(), message, scope.options.scroll && channel == scope.currentChannel); // On écrit le message
   }
-  scope.$apply();
+  scope.$apply(); // On applique les changements sur la DOM
+  if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
 }
 
 function onQuit(sender, message) {
-  var scope = angular.element(document.body).scope();
-  Object.keys(scope.channels).forEach(function(channel){
-    addText(scope.channels, channel, sender, "quit", new Date(), sender + " a quitté le serveur: \"" + message + "\"");
-    scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
-    scope.$apply();
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
+  Object.keys(scope.channels).forEach(function(channel){ // Sur chaque channel
+    addText(scope.channels, channel, "", "quit", new Date(), sender + " a quitté le serveur: \"" + message + "\""); // On affiche que l'utilisateur est parti
+    updatesNames(scope, channel) // On supprime l'utilisateur de la liste
+    scope.$apply(); // On applique les changements sur la DOM
+    if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
   });
 }
 
 function onPart(sender, channel, message) {
-  var scope = angular.element(document.body).scope();
-  addText(scope.channels, channel, sender, "part", new Date(), sender + " a quitté le salon: \"" + message + "\"");
-  scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(sender), 1);
-  scope.$apply();
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
+  addText(scope.channels, channel, "", "part", new Date(), sender + " a quitté le salon: \"" + message + "\""); // On ajoute le message
+  updatesNames(scope, channel); // On rafraichit la liste des utilisateurs
+  scope.$apply(); // On applique les changements sur la DOM
+  if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
 }
 
 function onKick(sender, channel, target, message) {
-  var scope = angular.element(document.body).scope();
-  addText(scope.channels, channel, sender, "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\"");
-  scope.channels[channel].users.splice(scope.channels[channel].users.indexOf(target), 1);
-  scope.$apply();
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
+  addText(scope.channels, channel, "", "kick", new Date(), sender + " a renvoyé " + target + " du salon pour: \"" + message + "\""); // On ajoute le message
+  updatesNames(scope, channel); // On rafraichit la liste des utilisateurs
+  scope.$apply(); // On applique les changements sur la DOM
+  if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
 }
 
 function onMode(sender, channel, mode, target) {
-  var scope = angular.element(document.body).scope();
-  scope.irc.sendNamesQuery(channel, function(names){
-    scope.channels[channel].users = names.filter(function(nickname){return nickname != ""});
-    scope.$apply();
-  });
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
+  updatesNames(scope, channel)
 }
 
+// Macro fonction qui ajoute ce qu'il faut là où il faut. Ce commentaire vous est offert par Julien Inc.
 function addText(channels, channel, user, type, time, text) {
   if (channels[channel].blocks.length > 0 && channels[channel].blocks.slice(-1)[0].user == user) { // Si ce n'est pas le premier message et que l'user concorde avec le dernier ayant écrit quelque chose
     channels[channel].blocks.slice(-1)[0].messages.push( // On ajoute un message au bloc
@@ -232,4 +241,11 @@ function addText(channels, channel, user, type, time, text) {
       }
     );
   }
+}
+
+function updatesNames(scope, channel) {
+  scope.irc.sendNamesQuery(channel, function(names){ // On envoit une requête pour obtenie la liste des utilisateurs avec leur mode
+    scope.channels[channel].users = names.split(" "); // On affiche la nouvelle liste d'utilisateur
+    scope.$apply(); // On applique les changements sur la DOM
+  });
 }
