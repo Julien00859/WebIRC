@@ -38,10 +38,14 @@ var IRC = function IRC(nickname, password, callback) {
     self.socket.on("IRCMessage", function(IRCMessage){
 
         // Récupère chaque ligne du message reçu et l'affiche en console
-        lines = IRCMessage.split("\r\n")
+        lines = IRCMessage.trim().split("\r\n")
         for (var index in lines) {
             var line = lines[index];
             console.log(line)
+
+            var scope = angular.element(document.body).scope();
+            addText(scope.channels, "Console", "", "raw", new Date(), line);
+            scope.$apply()
 
             if (!self.connected) { // Si on a pas encore reçu le MOTD
                 if (line.indexOf("End of message of the day") > -1) {
@@ -88,7 +92,7 @@ var IRC = function IRC(nickname, password, callback) {
                                   topic = topicAndName[1].split(" ").slice(4).join(" ").slice(1);
                                 }
                                 if (topicAndName.length >= 3 && topicAndName.slice(-1)[0].indexOf(":End of /NAMES list.") >= 0) {
-                                  names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1);
+                                  names = topicAndName.slice(-2, -1)[0].split(" ").slice(5).join(" ").slice(1).trim();
                                 }
                                 break;
                               }
@@ -113,8 +117,7 @@ var IRC = function IRC(nickname, password, callback) {
                             var channel = linex[2];
                             var partMessage = linex.slice(3).join(" ").slice(1);
                             onPart(sender, channel, partMessage);
-                            break;
-
+                            break
                         case "QUIT":
                             // :Julien00859!Julien@host-85-201-171-39.dynamic.voo.be QUIT :Quit: Keep calm and do not rage quit
                             //  ^^^^^^^^^^^                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -152,7 +155,7 @@ var IRC = function IRC(nickname, password, callback) {
         //                                 [^^^^^^^^^^,^^^^^^^^,^^^^^^^^,^^^^^^^^^^]
         // :127.0.0.1 366 Julien008 #Dev :End of /NAMES list.
 
-        var names = messages.split("\r\n")[0].split(" ").slice(5).join(" ").slice(1).split(" ");
+        var names = messages.split("\r\n")[0].split(" ").slice(5).join(" ").slice(1).trim();
         self.callbacks[callbackId](names);
     });
 }
