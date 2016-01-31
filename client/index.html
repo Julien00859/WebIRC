@@ -77,7 +77,7 @@
 
 			<form ng-submit="sendMessage($event);" ng-show="me.connected">
 				<fieldset class="inputText">
-					<textarea ng-model="message" placeholder="Entrez votre message"></textarea>
+					<textarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
 					<input type=submit>
 				</fieldset>
 			</form>
