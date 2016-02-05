@@ -73,6 +73,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     if ($scope.currentChannel == "Console") $scope.irc.sendCommand($scope.message) // Envoit un message en console
     else $scope.irc.sendMessage($scope.currentChannel, $scope.message); // Envoit le message au serveur IRC
     addText($scope.channels, $scope.currentChannel, $scope.me.nickname, "msg", new Date(), $scope.message); // Ajoute le texte sur la page HTML
+    if ($scope.options.scroll) setTimeout(function(){$("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView();}, 10); // Si l'option de déffilement est checked, on déffile sur le nouveau message
     $scope.message = ""; // Retire le text de la textarea
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
