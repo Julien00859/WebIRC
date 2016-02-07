@@ -208,7 +208,7 @@ nav li:hover {
   color: black;
 }
 .typeRaw {
-  font-family: courrier;
+  font-family: courier;
 }
 #options {
   color: white;
@@ -220,4 +220,10 @@ nav li:hover {
 #autoscrollcheck {
   position: relative;
   top: 3px;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;s
 }
