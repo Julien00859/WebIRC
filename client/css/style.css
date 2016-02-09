@@ -227,3 +227,11 @@ a {
 a:hover {
   text-decoration: underline;s
 }
+.ng-hide-remove {
+  position: relative
+  animation: 0.5s anim;
+}
+@keyframes anim {
+  from {opacity: 0}
+  top {opacity: 1}
+}

@@ -39,6 +39,17 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     scroll: true
   }
 
+  $scope.optionsMenu = ["Salon privé", "Permissions", "Kicker"];
+
+  this.menu = false;
+  $scope.showMenu = function() {
+    this.menu = true;
+  };
+  $scope.hideMenu = function() {
+    this.menu = false
+  }
+
+
   $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
 
   $interval(function(){$scope.date = new Date()}, 1000 * 60);
