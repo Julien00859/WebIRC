@@ -39,7 +39,20 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     scroll: true
   }
 
-  $scope.optionsMenu = ["Salon privé", "Permissions", "Kicker"];
+  $scope.optionsMenu = [
+    {
+      name: "Salon privé",
+      fun: "openPrivate()"
+    },
+    {
+      name:"Permissions",
+      fun: ""
+    },
+    {
+      name:"Kicker",
+      fun: "kick()"
+    }
+  ];
 
   this.menu = false;
   $scope.showMenu = function() {
@@ -52,7 +65,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 
   $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
 
-  $interval(function(){$scope.date = new Date()}, 1000 * 60);
+  $interval(function(){$scope.date = new Date()}, 1000 * 10);
 
   // Fonction pour s'enregistrer sur le serveur IRC
   $scope.register = function register(event) {
@@ -101,6 +114,13 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     }
   }
 
+  $scope.openPrivate = function openPrivate() {
+    alert("OK");
+    $scope.currentChannel = "#Private";
+    $scope.channels["#Private"][users] = [$scope.me.nickname, $(this).parents("li").html];
+    $scope.irc.sendCommand("JOIN " + "#Private");
+  }
+
   // Fonction qui retourne true si le salon passé en argument est le salon actif
   $scope.isCurrentChannel = function isCurrentChannel(channel) {
     return (channel == $scope.currentChannel);
@@ -144,6 +164,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       messageNotByMe: user != $scope.me.nickname && user != ""
     }
   }
+
 });
 
 // Fonctions event lié à IRC.js

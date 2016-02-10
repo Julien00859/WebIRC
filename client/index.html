@@ -97,7 +97,7 @@
 							<li ng-mouseover='showMenu()' ng-mouseleave="hideMenu()" ng-repeat="user in channel.users" ng-class="getUserModeClass(user)">
 								{{user}}
 								<ul ng-show="menu" ng-class="optionsMenu">
-									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-bind="option"></li>
+									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-click="option.fun" ng-bind="option.name"></li>
 								</ul>
 							</li>
 						</ul>

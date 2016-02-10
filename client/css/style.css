@@ -233,6 +233,7 @@ a:hover {
   padding: 5px 10px;
   max-width: 150px;
   display: block;
+  cursor: pointer;
 }
 .options:hover {
   border-color: white;
