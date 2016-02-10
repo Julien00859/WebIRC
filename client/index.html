@@ -13,13 +13,13 @@
 		<!-- Nos fichiers CSS -->
 		<link href="css/sprites.css" rel="stylesheet" type="text/css">
 		<link href="css/style.css" rel="stylesheet" type="text/css">
+		<link href="css/animate.css" rel="stylesheet" type="text/css">
 		<link href="css/input.css "rel="stylesheet" type="text/css">
 		<link rel="stylesheet" media="screen" href="css/responsive.css" type="text/css">
 
 		<!-- Dépendances JavaScript -->
 		<script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.js" type="text/javascript"> // AngularJS </script>
-		<script src="https://code.angularjs.org/1.5.0/angular-animate.js" type="text/javascript"> // Animation </script>
 		<script src="http://underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>
 		<script src="https://cdn.socket.io/socket.io-1.4.3.js"> // Socket.io </script>
 		<script src="js/classie.js"> // Ajout de classes </script>
@@ -97,7 +97,7 @@
 							<li ng-mouseover='showMenu()' ng-mouseleave="hideMenu()" ng-repeat="user in channel.users" ng-class="getUserModeClass(user)">
 								{{user}}
 								<ul ng-show="menu" ng-class="optionsMenu">
-									<li ng-repeat="option in optionsMenu" ng-bind="option"></li>
+									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-bind="option"></li>
 								</ul>
 							</li>
 						</ul>
