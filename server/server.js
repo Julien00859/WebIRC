@@ -14,8 +14,8 @@ const config = JSON.parse(fs.readFileSync(pathlib.join(process.cwd(), "config.js
 app.use(express.static("../client/"));
 
 // Lancement du serveur web
-http.listen(config.nodePort, function(){
-    console.log("Server running on localhost:" + config.nodePort + "\n");
+http.listen(process.env.PORT, function(){
+    console.log("Server running on localhost:" + process.env.PORT + "\n");
 });
 
 // Gestion des sockets clients
@@ -49,7 +49,7 @@ socketio.on("connection", function(socket){
 
         // Fonction de récupérer de chaque message envoyé depuis le serveur IRC
         socket.irc.server.on("data", function(buffer){
-            msg = new String(buffer).valueOf() // On converti le buffer en string
+            var msg = new String(buffer).valueOf() // On converti le buffer en string
 
             if (socket.irc.query != "") { // Si il y a une requête en attente, on exécute l'event associé en passant l'ID de la fonction de callback
                 var channel = msg.split("\r\n")[1].split(" ")[3];

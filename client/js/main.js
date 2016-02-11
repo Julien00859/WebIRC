@@ -11,12 +11,12 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       users: [], // La liste d'utilisateur dans le channel
       blocks: [ // La liste des blocks de message
         { // Un block de message (messages envoyés par la suite par un même utilisateur)
-          user: new String(), // L'utilisateur qui l'a envoyé
+          user: "", // L'utilisateur qui l'a envoyé
           messages: [ // La liste des messages
             { // Un message en particulier
-              type: new String(), // Le type du message (msg, kick, join, ...)
-              time: new Date(), // L'heure à laquelle le message a été envoyé
-              text: new String() // Le texte du message
+              type: "", // Le type du message (msg, kick, join, ...)
+              time: "", // L'heure à laquelle le message a été envoyé
+              text: "" // Le texte du message
             } // Fin message
           ] // Fin messages
         } // Fin block
@@ -35,24 +35,27 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 //  ]
   }
 
+  $scope.test = function() {
+    alert("Working");
+  }
+
+  $scope.openPrivate = function(user) {
+    var nickname = $scope.getRawUsername(user);
+    if (!(nickname in $scope.channels)){
+      console.log("Nouveau salon privé")
+      $scope.channels[nickname] = {
+        name: nickname,
+        topic: "Salon privé avec " + nickname,
+        users: [$scope.me.nickname, nickname],
+        blocks:[]
+      }
+    }
+    $scope.currentChannel = nickname;
+  }
+  
   $scope.options = {
     scroll: true
   }
-
-  $scope.optionsMenu = [
-    {
-      name: "Salon privé",
-      fun: "openPrivate()"
-    },
-    {
-      name:"Permissions",
-      fun: ""
-    },
-    {
-      name:"Kicker",
-      fun: "kick()"
-    }
-  ];
 
   this.menu = false;
   $scope.showMenu = function() {
@@ -61,7 +64,6 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
   $scope.hideMenu = function() {
     this.menu = false
   }
-
 
   $scope.currentChannel = ""; // Variable contenant le nom du salon actuellement selectionné par l'utilisateur
 
@@ -114,13 +116,6 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     }
   }
 
-  $scope.openPrivate = function openPrivate() {
-    alert("OK");
-    $scope.currentChannel = "#Private";
-    $scope.channels["#Private"][users] = [$scope.me.nickname, $(this).parents("li").html];
-    $scope.irc.sendCommand("JOIN " + "#Private");
-  }
-
   // Fonction qui retourne true si le salon passé en argument est le salon actif
   $scope.isCurrentChannel = function isCurrentChannel(channel) {
     return (channel == $scope.currentChannel);
@@ -164,6 +159,26 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       messageNotByMe: user != $scope.me.nickname && user != ""
     }
   }
+  
+  $scope.optionsMenu = [
+    {
+      name: "Salon privé",
+      fun: $scope.openPrivate
+    },
+    {
+      name:"Permissions",
+      fun: ""
+    },
+    {
+      name:"Kicker",
+      fun: $scope.kick
+    }
+  ];
+  
+  $scope.getRawUsername = function getRawUsername(fullnick) {
+    if (["+","%","@","~"].indexOf(fullnick[0]) >= 0) return fullnick.slice(1);
+    else return fullnick;
+  }
 
 });
 
@@ -206,12 +221,14 @@ function onJoin(sender, channel, topic, names) {
 function onPrivMsg(sender, channel, message) {
   var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
   if (channel in scope.channels) addText(scope.channels, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
-  else if (channel == scope.me.nickname) { // Sinon, si le salon n'existe pas encore (lors du démarrage du convo privé)
-    scope.channels[sender] =  { // On crée la mapping de base pour un salon
-      name: sender,
-      users: [sender, scope.me.nickname],
-      topic: "Message privé avec " + sender,
-      blocks: []
+  else if (channel == scope.me.nickname) { 
+    if (!(sender in scope.channels)) {
+      scope.channels[sender] =  {
+        name: sender,
+        users: [sender, scope.me.nickname],
+        topic: "Message privé avec " + sender,
+        blocks: []
+      }
     }
     addText(scope.channels, sender, sender, "msg", new Date(), message, scope.options.scroll && channel == scope.currentChannel); // On écrit le message
   }

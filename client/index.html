@@ -5,10 +5,10 @@
 		<meta charset=utf-8>
 
 		<!-- Polices supplémentaire -->
-		<link href="http://fonts.googleapis.com/css?family=Share+Tech" rel=stylesheet type=text/css> <!-- Presque Monospace -->
-		<link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css"> <!-- Sans serif -->
-		<link href="http://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css"> <!-- Serif -->
-		<link href="http://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css"> <!-- Sans serif (bien pour les smileys) -->
+		<link href="https://fonts.googleapis.com/css?family=Share+Tech" rel=stylesheet type=text/css> <!-- Presque Monospace -->
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css"> <!-- Sans serif -->
+		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet" type="text/css"> <!-- Serif -->
+		<link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css"> <!-- Sans serif (bien pour les smileys) -->
 
 		<!-- Nos fichiers CSS -->
 		<link href="css/sprites.css" rel="stylesheet" type="text/css">
@@ -18,9 +18,9 @@
 		<link rel="stylesheet" media="screen" href="css/responsive.css" type="text/css">
 
 		<!-- Dépendances JavaScript -->
-		<script src="http://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
+		<script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.js" type="text/javascript"> // AngularJS </script>
-		<script src="http://underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>
+		<!--<script src="https://underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>-->
 		<script src="https://cdn.socket.io/socket.io-1.4.3.js"> // Socket.io </script>
 		<script src="js/classie.js"> // Ajout de classes </script>
 
@@ -97,7 +97,7 @@
 							<li ng-mouseover='showMenu()' ng-mouseleave="hideMenu()" ng-repeat="user in channel.users" ng-class="getUserModeClass(user)">
 								{{user}}
 								<ul ng-show="menu" ng-class="optionsMenu">
-									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-click="option.fun" ng-bind="option.name"></li>
+									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-click="option.fun(user)" ng-bind="option.name"></li>
 								</ul>
 							</li>
 						</ul>
@@ -116,8 +116,8 @@
 				</ul>
 			</nav>
 				<h3 id=options>Options :</h3>
-				<label id=autoscroll>Défilement auto</label>
-				<input id=autoscrollcheck type="checkbox" ng-model="options.scroll">
+				<label for=autoscrollcheck>Défilement auto</label>
+				<input id=autoscrollcheck name=autoscrollcheck type="checkbox" ng-model="options.scroll">
 		</aside>
 
 		<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
