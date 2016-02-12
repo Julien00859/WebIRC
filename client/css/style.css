@@ -225,9 +225,9 @@ a {
   text-decoration: none;
 }
 a:hover {
-  text-decoration: underline;s
+  text-decoration: underline;
 }
-.options {
+.clickableButton {
   border: 2px solid #95a5a6;
   margin: 0 0 0 5px;
   padding: 5px 10px;
@@ -235,9 +235,9 @@ a:hover {
   display: block;
   cursor: pointer;
 }
-.options:hover {
+.clickableButton:hover {
   border-color: white;
-  transition: .5s linear all;
+  transition: .5s linear border;
   -webkit-transition: .5s linear all;
 }
 .options:nth-child(2) {
@@ -245,4 +245,16 @@ a:hover {
 }
 .options:nth-child(3) {
   animation-delay: 1s;
+}
+.notClickableButton {
+  margin: 0 0 0 5px;
+  padding: 5px 10px;
+  max-width: 150px;
+  display: block;
+  cursor: default;
+  background-color: #95a5a6;
+  border: 2px solid #c0392b;
+}
+.optionsIRC div {
+  line-height: 30px;
 }

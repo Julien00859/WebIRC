@@ -97,7 +97,7 @@
 							<li ng-mouseover='showMenu()' ng-mouseleave="hideMenu()" ng-repeat="user in channel.users" ng-class="getUserModeClass(user)">
 								{{user}}
 								<ul ng-show="menu" ng-class="optionsMenu">
-									<li class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-click="option.fun(user)" ng-bind="option.name"></li>
+									<li ng-class="getClickableButtonClass(channel.name, option.permLevel)" class="options animated fadeInDown" ng-repeat="option in optionsMenu" ng-click="option.fun(user, option.permLevel)" ng-bind="option.name"></li>
 								</ul>
 							</li>
 						</ul>
@@ -116,8 +116,21 @@
 				</ul>
 			</nav>
 				<h3 id=options>Options :</h3>
-				<label for=autoscrollcheck>Défilement auto</label>
-				<input id=autoscrollcheck name=autoscrollcheck type="checkbox" ng-model="options.scroll">
+				<div class="optionsIRC">
+					<div>
+						<label for=autoscrollcheck>Défilement auto</label>
+						<input id=autoscrollcheck name=autoscrollcheck type="checkbox" ng-model="options.scroll">
+					</div>
+					<div>
+						<label for=visualnotif>Notification visuelle</label>
+						<input id=visualnotif name=visualnotif type="checkbox" ng-model="options.visu">
+					</div>
+					<div>
+						<label for=sonornotice>Notification sonore</label>
+						<input id=sonornotice name=sonornotice type="checkbox" ng-model="options.sound">
+					</div>
+					
+				</div>
 		</aside>
 
 		<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->

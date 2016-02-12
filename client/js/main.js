@@ -35,8 +35,10 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
 //  ]
   }
 
-  $scope.test = function() {
-    alert("Working");
+  $scope.kick = function kick(user, permLevelNeeded) {
+    if ($scope.canIDoIt($scope.currentChannel, permLevelNeeded)) {
+      $scope.irc.sendCommand("KICK " + $scope.currentChannel + " " + user + " :Kicked");
+    }
   }
 
   $scope.openPrivate = function(user) {
@@ -54,7 +56,9 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
   }
   
   $scope.options = {
-    scroll: true
+    scroll: true,
+    visu: true,
+    sound: false
   }
 
   this.menu = false;
@@ -91,6 +95,8 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
           });
         }
       });
+    Notification.requestPermission(); // Demande la permission de jouer les notifications
+    
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
@@ -163,21 +169,50 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
   $scope.optionsMenu = [
     {
       name: "Salon privé",
-      fun: $scope.openPrivate
-    },
-    {
-      name:"Permissions",
-      fun: ""
+      fun: $scope.openPrivate,
+      permLevel: 0
     },
     {
       name:"Kicker",
-      fun: $scope.kick
+      fun: $scope.kick,
+      permLevel: 2
     }
   ];
+  
+  $scope.canIDoIt = function canIDoIt(channel, permLevelNeeded) {
+    var iCan = false;
+    for (var user in $scope.channels[channel].users) {
+      if ($scope.channels[channel].users[user].indexOf($scope.me.nickname) >= 0) {
+        if ($scope.getUserPermission($scope.channels[channel].users[user]).level >= permLevelNeeded) {
+          iCan = true;
+        }
+      }
+    }
+    return iCan
+  }
+  
+  $scope.getClickableButtonClass = function getClickableButtonClass(channel, permLevelNeeded) {
+    var isClickable = $scope.canIDoIt(channel, permLevelNeeded);
+    return {
+      clickableButton: isClickable,
+      notClickableButton: !isClickable
+    }
+  }
   
   $scope.getRawUsername = function getRawUsername(fullnick) {
     if (["+","%","@","~"].indexOf(fullnick[0]) >= 0) return fullnick.slice(1);
     else return fullnick;
+  }
+  
+  $scope.getUserPermission = function getUserPermission(fullnick) {
+    var perms = {
+      "~":{name: "Owner", level: 4},
+      "@":{name: "Op", level: 3},
+      "%":{name: "HalfOp", level: 2},
+      "+":{name: "Voice", level: 1}
+    }
+    if (fullnick[0] in perms) return perms[fullnick[0]]
+    else return {name: "User", level: 0}
   }
 
 });
@@ -234,6 +269,9 @@ function onPrivMsg(sender, channel, message) {
   }
   scope.$apply(); // On applique les changements sur la DOM
   if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
+  if ((message.indexOf(scope.me.nickname) >= 0 || channel == scope.me.nickname) && scope.options.visu) {// Notification
+    notif("Web IRC - Nouveau message", "Vous avez été pocké !", scope.options.sound)
+  }
 }
 
 function onQuit(sender, message) {
@@ -298,4 +336,25 @@ function updatesNames(scope, channel) {
     scope.channels[channel].users = names.split(" "); // On affiche la nouvelle liste d'utilisateur
     scope.$apply(); // On applique les changements sur la DOM
   });
+}
+
+function notif(title, content, bip) {
+  // Let's check whether notification permissions have already been granted
+  if (Notification.permission === "granted") {
+    // If it's okay let's create a notification
+    var not = new Notification(title, {body:content, silent:!bip});
+  }
+
+  // Otherwise, we need to ask the user for permission
+  else if (Notification.permission !== 'denied') {
+    Notification.requestPermission(function (permission) {
+      // If the user accepts, let's create a notification
+      if (permission === "granted") {
+        var not = new Notification(title, {body:content, silent:!bip});
+      }
+    });
+  }
+
+  // Finally, if the user has denied notifications and you 
+  // want to be respectful there is no need to bother them any more.
 }
