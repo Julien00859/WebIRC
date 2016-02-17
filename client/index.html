@@ -18,15 +18,17 @@
 		<link rel="stylesheet" media="screen" href="css/responsive.css" type="text/css">
 
 		<!-- Dépendances JavaScript -->
-		<script src="https://code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.js" type="text/javascript"> // AngularJS </script>
-		<!--<script src="https://underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>-->
-		<script src="https://cdn.socket.io/socket.io-1.4.3.js"> // Socket.io </script>
+		<script src="//code.jquery.com/jquery-2.2.0.min.js" type="text/javascript"> // jQuery </script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular.js" type="text/javascript"> // AngularJS </script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.0-rc.1/angular-sanitize.js"> // ngSanitize </script>
+		<!--<script src="//underscorejs.org/underscore-min.js" type="text/javascript"> // underscore </script>-->
+		<script src="//cdn.socket.io/socket.io-1.4.3.js"> // Socket.io </script>
 		<script src="js/classie.js"> // Ajout de classes </script>
 
 		<!-- Nos scripts -->
 		<script src="js/main.js" type="text/javascript"></script>
-		<script src="js/IRC.js"></script>
+		<script src="js/IRC.js" type="text/javascript"></script>
+    <script src="js/messageParser.js" type="text/javascript"></script>
 
 	</head>
 	<body ng-controller="fieldsController as ctrl">
@@ -45,7 +47,7 @@
 						<div ng-class="getMessageSenderClass(block.user)">
 							<p
 								 ng-repeat="message in block.messages"
-								 ng-bind="message.text"
+								 ng-bind-html="message.text"
 								 ng-attr-title="Envoyé à: {{message.time | date: 'HH:mm:ss'}}"
 								 ng-class="getMessageTypeClass(message.type);">
 							</p> <!-- Et chaque message -->
@@ -129,7 +131,7 @@
 						<label for=sonornotice>Notification sonore</label>
 						<input id=sonornotice name=sonornotice type="checkbox" ng-model="options.sound">
 					</div>
-					
+
 				</div>
 		</aside>
 

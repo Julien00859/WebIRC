@@ -1,9 +1,9 @@
 // Module principale
 var main = angular.module("main", ["chatIrc"]);
 // Dépendance du module principale
-var chatIrc = angular.module("chatIrc", []);
+var chatIrc = angular.module("chatIrc", ["ngSanitize"]);
 // Controlleur du module chatIrc
-chatIrc.controller("fieldsController", function($scope, $interval) {
+chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
   $scope.channels = { // Liste des salons
     "Console": { // Un salon en particulier
       name: "Console", // Son nom
@@ -54,7 +54,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     }
     $scope.currentChannel = nickname;
   }
-  
+
   $scope.options = {
     scroll: true,
     visu: true,
@@ -96,7 +96,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
         }
       });
     Notification.requestPermission(); // Demande la permission de jouer les notifications
-    
+
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
@@ -165,7 +165,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       messageNotByMe: user != $scope.me.nickname && user != ""
     }
   }
-  
+
   $scope.optionsMenu = [
     {
       name: "Salon privé",
@@ -178,7 +178,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       permLevel: 2
     }
   ];
-  
+
   $scope.canIDoIt = function canIDoIt(channel, permLevelNeeded) {
     var iCan = false;
     for (var user in $scope.channels[channel].users) {
@@ -190,7 +190,7 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
     }
     return iCan
   }
-  
+
   $scope.getClickableButtonClass = function getClickableButtonClass(channel, permLevelNeeded) {
     var isClickable = $scope.canIDoIt(channel, permLevelNeeded);
     return {
@@ -198,12 +198,12 @@ chatIrc.controller("fieldsController", function($scope, $interval) {
       notClickableButton: !isClickable
     }
   }
-  
+
   $scope.getRawUsername = function getRawUsername(fullnick) {
     if (["+","%","@","~"].indexOf(fullnick[0]) >= 0) return fullnick.slice(1);
     else return fullnick;
   }
-  
+
   $scope.getUserPermission = function getUserPermission(fullnick) {
     var perms = {
       "~":{name: "Owner", level: 4},
@@ -256,7 +256,7 @@ function onJoin(sender, channel, topic, names) {
 function onPrivMsg(sender, channel, message) {
   var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
   if (channel in scope.channels) addText(scope.channels, channel, sender, "msg", new Date(), message); // Si le salon existe déjà, on écrit simplement le message dessus
-  else if (channel == scope.me.nickname) { 
+  else if (channel == scope.me.nickname) {
     if (!(sender in scope.channels)) {
       scope.channels[sender] =  {
         name: sender,
@@ -323,7 +323,7 @@ function addText(channels, channel, user, type, time, text) {
           {
             "type": type,
             "time": time,
-            "text": text
+            "text": messageParser.parse(text)
           }
         ]
       }
@@ -354,7 +354,4 @@ function notif(title, content, bip) {
       }
     });
   }
-
-  // Finally, if the user has denied notifications and you 
-  // want to be respectful there is no need to bother them any more.
 }
