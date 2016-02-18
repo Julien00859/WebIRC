@@ -1,7 +1,7 @@
 var messageParser = {
   urlRE: new RegExp("http(s)?://?([A-Za-z0-9\-_%]{1,}\.)?[A-Za-z0-9\-_%]{1,}\.(com|edu|info|net|org|gov|be|fr)(:[0-9]{1,5})?(/[A-Za-z0-9\-/_%\.?=+]{0,})?", "g"),
 
-  smileys: [":)",":(",":D","xD","(cool)",":o",";)","(chuckle)",":'(","(fear)",":|","(kiss)",":p",":$","(wait)","(angel)",":x","(devil)","(wasntme)","(party)",":@","(doh)","]:)","(yawn)","(inlove)",":^)","(idontcare)","(heidy)","<3","(star)","(handshake)","(n)","(y)","(emo)","(clap)","(rofl)","(punch)","(bug)","(headbang)","(clock)","(punch)","(drunk)","(smartphone)","(film)","(mail)","(brokenheart)","(cake)","(music)","($)","(pizza)","(cafe)","(sun)","(flex)","(tmi)","(flower)","(smoke)"]  
+  smileys: [":)",":(",":D","xD","(cool)",":o",";)","(chuckle)",":'(","(fear)",":|","(kiss)",":p",":$","(wait)","(angel)",":x","(devil)","(wasntme)","(party)",":@","(doh)","]:)","(yawn)","(inlove)",":^)","(idontcare)","(heidy)","<3","(star)","(handshake)","(n)","(y)","(emo)","(clap)","(rofl)","(punch)","(bug)","(headbang)","(clock)","(punch)","(drunk)","(smartphone)","(film)","(mail)","(brokenheart)","(cake)","(music)","($)","(pizza)","(cafe)","(sun)","(flex)","(tmi)","(flower)","(smoke)"],
 
   parse: function parse(message) {
     // On crée un élément html factice sur lequel on va travailler
@@ -23,7 +23,7 @@ var messageParser = {
     // Deuxième étape: on effectue les regex
     dom.html(dom.html().replace(this.urlRE, "<a href='$&' target=_blank>$&</a>"))
     for (var i in this.smileys) {
-      dom.html(dom.html().replace(this.smileys[i], "<img class='sprites' name='$&'>"
+      dom.html(dom.html().replace(this.smileys[i], "<span class='sprites' name='$&'></span>"))
     }
 
     // Troisième étape: On restaure le contenu des balises

@@ -14,7 +14,7 @@ const config = JSON.parse(fs.readFileSync(pathlib.join(process.cwd(), "config.js
 app.use(express.static("../client/"));
 
 // Lancement du serveur web
-http.listen(process.env.PORT, function(){
+http.listen(config.nodePort, function(){
     console.log("Server running on localhost:" + process.env.PORT + "\n");
 });
 
