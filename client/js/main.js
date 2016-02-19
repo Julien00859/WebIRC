@@ -100,6 +100,10 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
     event.preventDefault(); // Empêche l'envoit du formulaire
   }
 
+  $scope.showSmileys = function() {
+    $scope.smileys = true;
+  }
+
   // Fonction pour envoyer un message (commande PRIVMSG) sur le salon courant
   $scope.sendMessage = function sendMessage(event) {
     if ($scope.currentChannel == "Console") $scope.irc.sendCommand($scope.message) // Envoit un message en console

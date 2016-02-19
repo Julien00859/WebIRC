@@ -81,6 +81,113 @@
 			<form ng-submit="sendMessage($event);" ng-show="me.connected">
 				<fieldset class="inputText">
 					<textarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
+					<button ng-click="showSmileys()"><img ng-src="img/smiley_icon.png" alt=smileys></button><!-- Affiche les smileys lors du click-->
+					<table id="smiley" ng-show="smileys"> <!-- Smileys -->
+						<caption>Liste des smileys disponible</caption>
+						<tr>
+							<td class="sprites" name=":)"></td>
+							<td class="sprites" name=":("></td>
+							<td class="sprites" name=":D"></td>
+							<td class="sprites" name="xD"></td>
+							<td class="sprites" name="(cool)"></td>
+							<td class="sprites" name=":o"></td>
+							<td class="sprites" name=";)"></td>
+							<td class="sprites" name="(chuckle)"></td>
+							<td class="sprites" name=":'("></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(fear)"></td>
+							<td class="sprites" name=":|"></td>
+							<td class="sprites" name="(kiss)"></td>
+							<td class="sprites" name=":p"></td>
+							<td class="sprites" name=":$"></td>
+							<td class="sprites" name="(wait)"></td>
+							<td class="sprites" name="(angel)"></td>
+							<td class="sprites" name=":x"></td>
+							<td class="sprites" name="(devil)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(wasntme)"></td>
+							<td class="sprites" name="(party)"></td>
+							<td class="sprites" name=":@"></td>
+							<td class="sprites" name="(doh)"></td>
+							<td class="sprites" name="]:)"></td>
+							<td class="sprites" name="(yawn)"></td>
+							<td class="sprites" name="(inlove)"></td>
+							<td class="sprites" name=":^)"></td>
+							<td class="sprites" name="(idontcare)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(heidy)"></td>
+							<td class="sprites" name="<3"></td>
+							<td class="sprites" name="(star)"></td>
+							<td class="sprites" name="(handshake)"></td>
+							<td class="sprites" name="(n)"></td>
+							<td class="sprites" name="(y)"></td>
+							<td class="sprites" name="(emo)"></td>
+							<td class="sprites" name="(clap)"></td>
+							<td class="sprites" name="(rofl)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(bug)"></td>
+							<td class="sprites" name="(headbang)"></td>
+							<td class="sprites" name="(clock)"></td>
+							<td class="sprites" name="(punch)"></td>
+							<td class="sprites" name="(drunk)"></td>
+							<td class="sprites" name="(smartphone)"></td>
+							<td class="sprites" name="(film)"></td>
+							<td class="sprites" name="(mail)"></td>
+							<td class="sprites" name="(brokenheart)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(cake)"></td>
+							<td class="sprites" name="(music)"></td>
+							<td class="sprites" name="($)"></td>
+							<td class="sprites" name="(pizza)"></td>
+							<td class="sprites" name="(cafe)"></td>
+							<td class="sprites" name="(sun)"></td>
+							<td class="sprites" name="(flex)"></td>
+							<td class="sprites" name="(tmi)"></td>
+							<td class="sprites" name="(flower)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(skome)"></td>
+							<td class="sprites" name="(rain)"></td>
+							<td class="sprites" name="(whew)"></td>
+							<td class="sprites" name="(shake)"></td>
+							<td class="sprites" name="(bow)"></td>
+							<td class="sprites" name="(think)"></td>
+							<td class="sprites" name="(call)"></td>
+							<td class="sprites" name="(tumbleweed)"></td>
+							<td class="sprites" name="(beer)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(nerd)"></td>
+							<td class="sprites" name="(hi)"></td>
+							<td class="sprites" name="(mm)"></td>
+							<td class="sprites" name="(puke)"></td>
+							<td class="sprites" name="(worry)"></td>
+							<td class="sprites" name="(facepalm)"></td>
+							<td class="sprites" name="(dance)"></td>
+							<td class="sprites" name="(bandit)"></td>
+							<td class="sprites" name="(drink)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="|-)"></td>
+							<td class="sprites" name="(ninja)"></td>
+							<td class="sprites" name="(girl)"></td>
+							<td class="sprites" name="(hug)"></td>
+							<td class="sprites" name="(yn)"></td>
+							<td class="sprites" name="(envy)"></td>
+							<td class="sprites" name="(talktothehand)"></td>
+							<td class="sprites" name="(cat)"></td>
+							<td class="sprites" name="(idea)"></td>
+						</tr>
+						<tr>
+							<td class="sprites" name="(rock)"></td>
+							<td class="sprites" name="(poolparty)"></td>
+						</tr>
+					</table>
 					<input type=submit>
 				</fieldset>
 			</form>
@@ -135,112 +242,7 @@
 				</div>
 		</aside>
 
-		<table id="smiley" hidden> <!-- Pour l'instant => hidden, et mis n'importe où !!! -->
-			<caption>Liste des smileys disponible</caption>
-			<tr>
-				<td class="sprites" name=":)"></td>
-				<td class="sprites" name=":("></td>
-				<td class="sprites" name=":D"></td>
-				<td class="sprites" name="xD"></td>
-				<td class="sprites" name="(cool)"></td>
-				<td class="sprites" name=":o"></td>
-				<td class="sprites" name=";)"></td>
-				<td class="sprites" name="(chuckle)"></td>
-				<td class="sprites" name=":'("></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(fear)"></td>
-				<td class="sprites" name=":|"></td>
-				<td class="sprites" name="(kiss)"></td>
-				<td class="sprites" name=":p"></td>
-				<td class="sprites" name=":$"></td>
-				<td class="sprites" name="(wait)"></td>
-				<td class="sprites" name="(angel)"></td>
-				<td class="sprites" name=":x"></td>
-				<td class="sprites" name="(devil)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(wasntme)"></td>
-				<td class="sprites" name="(party)"></td>
-				<td class="sprites" name=":@"></td>
-				<td class="sprites" name="(doh)"></td>
-				<td class="sprites" name="]:)"></td>
-				<td class="sprites" name="(yawn)"></td>
-				<td class="sprites" name="(inlove)"></td>
-				<td class="sprites" name=":^)"></td>
-				<td class="sprites" name="(idontcare)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(heidy)"></td>
-				<td class="sprites" name="<3"></td>
-				<td class="sprites" name="(star)"></td>
-				<td class="sprites" name="(handshake)"></td>
-				<td class="sprites" name="(n)"></td>
-				<td class="sprites" name="(y)"></td>
-				<td class="sprites" name="(emo)"></td>
-				<td class="sprites" name="(clap)"></td>
-				<td class="sprites" name="(rofl)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(bug)"></td>
-				<td class="sprites" name="(headbang)"></td>
-				<td class="sprites" name="(clock)"></td>
-				<td class="sprites" name="(punch)"></td>
-				<td class="sprites" name="(drunk)"></td>
-				<td class="sprites" name="(smartphone)"></td>
-				<td class="sprites" name="(film)"></td>
-				<td class="sprites" name="(mail)"></td>
-				<td class="sprites" name="(brokenheart)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(cake)"></td>
-				<td class="sprites" name="(music)"></td>
-				<td class="sprites" name="($)"></td>
-				<td class="sprites" name="(pizza)"></td>
-				<td class="sprites" name="(cafe)"></td>
-				<td class="sprites" name="(sun)"></td>
-				<td class="sprites" name="(flex)"></td>
-				<td class="sprites" name="(tmi)"></td>
-				<td class="sprites" name="(flower)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(skome)"></td>
-				<td class="sprites" name="(rain)"></td>
-				<td class="sprites" name="(whew)"></td>
-				<td class="sprites" name="(shake)"></td>
-				<td class="sprites" name="(bow)"></td>
-				<td class="sprites" name="(think)"></td>
-				<td class="sprites" name="(call)"></td>
-				<td class="sprites" name="(tumbleweed)"></td>
-				<td class="sprites" name="(beer)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(nerd)"></td>
-				<td class="sprites" name="(hi)"></td>
-				<td class="sprites" name="(mm)"></td>
-				<td class="sprites" name="(puke)"></td>
-				<td class="sprites" name="(worry)"></td>
-				<td class="sprites" name="(facepalm)"></td>
-				<td class="sprites" name="(dance)"></td>
-				<td class="sprites" name="(bandit)"></td>
-				<td class="sprites" name="(drink)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="|-)"></td>
-				<td class="sprites" name="(ninja)"></td>
-				<td class="sprites" name="(girl)"></td>
-				<td class="sprites" name="(hug)"></td>
-				<td class="sprites" name="(yn)"></td>
-				<td class="sprites" name="(envy)"></td>
-				<td class="sprites" name="(talktothehand)"></td>
-				<td class="sprites" name="(cat)"></td>
-				<td class="sprites" name="(idea)"></td>
-			</tr>
-			<tr>
-				<td class="sprites" name="(rock)"></td>
-				<td class="sprites" name="(poolparty)"></td>
-			</tr>
-		</table>
+
 		<script>
 				[].slice.call( document.querySelectorAll( 'input.input__field' ) ).forEach(function(inputEl) {
 					// in case the input is already filled..

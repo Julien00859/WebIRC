@@ -15,7 +15,7 @@ app.use(express.static("../client/"));
 
 // Lancement du serveur web
 http.listen(config.nodePort, function(){
-    console.log("Server running on localhost:" + process.env.PORT + "\n");
+    console.log("Server running on localhost:" + config.nodePort + "\n");
 });
 
 // Gestion des sockets clients
