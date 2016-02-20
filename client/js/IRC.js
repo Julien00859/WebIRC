@@ -135,6 +135,13 @@ var IRC = function IRC(nickname, password, callback) {
                             var target = linex[4];
                             onMode(sender, channel, mode, target);
                             break;
+
+                        case "NICK":
+                            // :Julien008!Julien@94.111.168.53 NICK Julien
+                            //  ^^^^^^^^^                           ^^^^^^
+                            var sender = linex[0].slice(1, linex[0].indexOf("!"));
+                            var newNick = linex[2];
+                            onNick(sender, newNick);
                     }
                 }
             }

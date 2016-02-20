@@ -186,7 +186,7 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
   $scope.canIDoIt = function canIDoIt(channel, permLevelNeeded) {
     var iCan = false;
     for (var user in $scope.channels[channel].users) {
-      if ($scope.channels[channel].users[user].indexOf($scope.me.nickname) >= 0) {
+      if ($scope.channels[channel].users[user].contains($scope.me.nickname)) {
         if ($scope.getUserPermission($scope.channels[channel].users[user]).level >= permLevelNeeded) {
           iCan = true;
         }
@@ -204,7 +204,7 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
   }
 
   $scope.getRawUsername = function getRawUsername(fullnick) {
-    if (["+","%","@","~"].indexOf(fullnick[0]) >= 0) return fullnick.slice(1);
+    if (["+","%","@","~"].contains(fullnick[0])) return fullnick.slice(1);
     else return fullnick;
   }
 
@@ -225,7 +225,7 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
   }
 
   $scope.addSmiley = function addSmiley(smiley){
-    if (messageParser.smileys.indexOf("(" + smiley + ")") >= 0) {
+    if (messageParser.smileys.contains("(" + smiley + ")")) {
       var cursor = document.getElementById("messagesubmittextarea").selectionStart;
       $scope.message = $scope.message.slice(0,cursor) + "(" + smiley + ")" + $scope.message.slice(cursor);
     }
@@ -285,7 +285,7 @@ function onPrivMsg(sender, channel, message) {
   }
   scope.$apply(); // On applique les changements sur la DOM
   if (scope.options.scroll && channel == scope.currentChannel) $("#chatbox section:not(.ng-hide) .block:last p:last").get(0).scrollIntoView(); // Si l'option scroll est checké et qu'on se trouve dans le salon actif, on récupère le dernier élément et on scroll dessus.
-  if ((message.indexOf(scope.me.nickname) >= 0 || channel == scope.me.nickname) && scope.options.visu) {// Notification
+  if ((message.contains(scope.me.nickname) || channel == scope.me.nickname) && scope.options.visu) {// Notification
     notif("Web IRC - Nouveau message", "Vous avez été pocké !", scope.options.sound)
   }
 }
@@ -319,6 +319,14 @@ function onKick(sender, channel, target, message) {
 function onMode(sender, channel, mode, target) {
   var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
   updatesNames(scope, channel)
+}
+
+function onNick(sender, newNick) {
+  var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
+  Object.keys(scope.channels).forEach(function(channel){
+    var i = channel.users.indexOf(sender);
+    if (i >= 0) channel.users[i] = newNick; 
+  })
 }
 
 // Macro fonction qui ajoute ce qu'il faut là où il faut. Ce commentaire vous est offert par Julien Inc.
