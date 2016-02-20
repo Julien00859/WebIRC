@@ -74,7 +74,7 @@ var messageParser = {
     ":|":"agape",
     ":'(":"cry",
     ":x":"embarrassed",
-    ":$":"sky",
+    ":$":"shy",
     ":p":"pullthetong",
     "è_é":"machiavellian",
     "é_è":"agape"
