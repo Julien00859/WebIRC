@@ -80,112 +80,112 @@
 
 			<form ng-submit="sendMessage($event);" ng-show="me.connected">
 				<fieldset class="inputText">
-					<textarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
+					<textarea id=messagesubmittextarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
 					<button ng-click="showSmileys()"><img ng-src="img/smiley_icon.png" alt=smileys></button><!-- Affiche les smileys lors du click-->
 					<table id="smiley" ng-show="smileys"> <!-- Smileys -->
 						<caption>Liste des smileys disponible</caption>
 						<tr>
-							<td class="sprites" name=":)"></td>
-							<td class="sprites" name=":("></td>
-							<td class="sprites" name=":D"></td>
-							<td class="sprites" name="xD"></td>
-							<td class="sprites" name="(cool)"></td>
-							<td class="sprites" name=":o"></td>
-							<td class="sprites" name=";)"></td>
-							<td class="sprites" name="(chuckle)"></td>
-							<td class="sprites" name=":'("></td>
+							<td class="sprites smile"></td>
+							<td class="sprites sad"></td>
+							<td class="sprites happy"></td>
+							<td class="sprites laugh"></td>
+							<td class="sprites cool"></td>
+							<td class="sprites shocked"></td>
+							<td class="sprites twinkle"></td>
+							<td class="sprites chuckle"></td>
+							<td class="sprites cry"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(fear)"></td>
-							<td class="sprites" name=":|"></td>
-							<td class="sprites" name="(kiss)"></td>
-							<td class="sprites" name=":p"></td>
-							<td class="sprites" name=":$"></td>
-							<td class="sprites" name="(wait)"></td>
-							<td class="sprites" name="(angel)"></td>
-							<td class="sprites" name=":x"></td>
-							<td class="sprites" name="(devil)"></td>
+							<td class="sprites fear"></td>
+							<td class="sprites agape"></td>
+							<td class="sprites kiss"></td>
+							<td class="sprites pullthetong"></td>
+							<td class="sprites shy"></td>
+							<td class="sprites wait"></td>
+							<td class="sprites angel"></td>
+							<td class="sprites embarrassed"></td>
+							<td class="sprites devil"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(wasntme)"></td>
-							<td class="sprites" name="(party)"></td>
-							<td class="sprites" name=":@"></td>
-							<td class="sprites" name="(doh)"></td>
-							<td class="sprites" name="]:)"></td>
-							<td class="sprites" name="(yawn)"></td>
-							<td class="sprites" name="(inlove)"></td>
-							<td class="sprites" name=":^)"></td>
-							<td class="sprites" name="(idontcare)"></td>
+							<td class="sprites wasntme"></td>
+							<td class="sprites party"></td>
+							<td class="sprites rage"></td>
+							<td class="sprites doh"></td>
+							<td class="sprites machiavellian"></td>
+							<td class="sprites yawn"></td>
+							<td class="sprites inlove"></td>
+							<td class="sprites wonder"></td>
+							<td class="sprites idontcare"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(heidy)"></td>
-							<td class="sprites" name="<3"></td>
-							<td class="sprites" name="(star)"></td>
-							<td class="sprites" name="(handshake)"></td>
-							<td class="sprites" name="(n)"></td>
-							<td class="sprites" name="(y)"></td>
-							<td class="sprites" name="(emo)"></td>
-							<td class="sprites" name="(clap)"></td>
-							<td class="sprites" name="(rofl)"></td>
+							<td class="sprites heidy"></td>
+							<td class="sprites love"></td>
+							<td class="sprites star"></td>
+							<td class="sprites handshake"></td>
+							<td class="sprites no"></td>
+							<td class="sprites yes"></td>
+							<td class="sprites emo"></td>
+							<td class="sprites clap"></td>
+							<td class="sprites rofl"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(bug)"></td>
-							<td class="sprites" name="(headbang)"></td>
-							<td class="sprites" name="(clock)"></td>
-							<td class="sprites" name="(punch)"></td>
-							<td class="sprites" name="(drunk)"></td>
-							<td class="sprites" name="(smartphone)"></td>
-							<td class="sprites" name="(film)"></td>
-							<td class="sprites" name="(mail)"></td>
-							<td class="sprites" name="(brokenheart)"></td>
+							<td class="sprites bug"></td>
+							<td class="sprites headbang"></td>
+							<td class="sprites clock"></td>
+							<td class="sprites punch"></td>
+							<td class="sprites drunk"></td>
+							<td class="sprites smartphone"></td>
+							<td class="sprites film"></td>
+							<td class="sprites mail"></td>
+							<td class="sprites brokenheart"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(cake)"></td>
-							<td class="sprites" name="(music)"></td>
-							<td class="sprites" name="($)"></td>
-							<td class="sprites" name="(pizza)"></td>
-							<td class="sprites" name="(cafe)"></td>
-							<td class="sprites" name="(sun)"></td>
-							<td class="sprites" name="(flex)"></td>
-							<td class="sprites" name="(tmi)"></td>
-							<td class="sprites" name="(flower)"></td>
+							<td class="sprites cake"></td>
+							<td class="sprites music"></td>
+							<td class="sprites dollar"></td>
+							<td class="sprites pizza"></td>
+							<td class="sprites cafe"></td>
+							<td class="sprites sun"></td>
+							<td class="sprites flex"></td>
+							<td class="sprites tmi"></td>
+							<td class="sprites flower"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(skome)"></td>
-							<td class="sprites" name="(rain)"></td>
-							<td class="sprites" name="(whew)"></td>
-							<td class="sprites" name="(shake)"></td>
-							<td class="sprites" name="(bow)"></td>
-							<td class="sprites" name="(think)"></td>
-							<td class="sprites" name="(call)"></td>
-							<td class="sprites" name="(tumbleweed)"></td>
-							<td class="sprites" name="(beer)"></td>
+							<td class="sprites skome"></td>
+							<td class="sprites rain"></td>
+							<td class="sprites whew"></td>
+							<td class="sprites shake"></td>
+							<td class="sprites bow"></td>
+							<td class="sprites think"></td>
+							<td class="sprites call"></td>
+							<td class="sprites tumbleweed"></td>
+							<td class="sprites beer"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(nerd)"></td>
-							<td class="sprites" name="(hi)"></td>
-							<td class="sprites" name="(mm)"></td>
-							<td class="sprites" name="(puke)"></td>
-							<td class="sprites" name="(worry)"></td>
-							<td class="sprites" name="(facepalm)"></td>
-							<td class="sprites" name="(dance)"></td>
-							<td class="sprites" name="(bandit)"></td>
-							<td class="sprites" name="(drink)"></td>
+							<td class="sprites nerd"></td>
+							<td class="sprites hi"></td>
+							<td class="sprites mm"></td>
+							<td class="sprites puke"></td>
+							<td class="sprites worry"></td>
+							<td class="sprites facepalm"></td>
+							<td class="sprites dance"></td>
+							<td class="sprites bandit"></td>
+							<td class="sprites drink"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="|-)"></td>
-							<td class="sprites" name="(ninja)"></td>
-							<td class="sprites" name="(girl)"></td>
-							<td class="sprites" name="(hug)"></td>
-							<td class="sprites" name="(yn)"></td>
-							<td class="sprites" name="(envy)"></td>
-							<td class="sprites" name="(talktothehand)"></td>
-							<td class="sprites" name="(cat)"></td>
-							<td class="sprites" name="(idea)"></td>
+							<td class="sprites sleep"></td>
+							<td class="sprites ninja"></td>
+							<td class="sprites girl"></td>
+							<td class="sprites hug"></td>
+							<td class="sprites yn"></td>
+							<td class="sprites envy"></td>
+							<td class="sprites talktothehand"></td>
+							<td class="sprites cat"></td>
+							<td class="sprites idea"></td>
 						</tr>
 						<tr>
-							<td class="sprites" name="(rock)"></td>
-							<td class="sprites" name="(poolparty)"></td>
+							<td class="sprites rock"></td>
+							<td class="sprites poolparty"></td>
 						</tr>
 					</table>
 					<input type=submit>

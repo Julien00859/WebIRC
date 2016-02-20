@@ -219,6 +219,18 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
     else return {name: "User", level: 0}
   }
 
+  $scope.smileys = false;
+  $scope.showSmileys = function showSmileys(){
+    $scope.smileys = !$scope.smileys;
+  }
+
+  $scope.addSmiley = function addSmiley(smiley){
+    if (messageParser.smileys.indexOf("(" + smiley + ")") >= 0) {
+      var cursor = document.getElementById("messagesubmittextarea").selectionStart;
+      $scope.message = $scope.message.slice(0,cursor) + "(" + smiley + ")" + $scope.message.slice(cursor);
+    }
+  }
+
 });
 
 // Fonctions event lié à IRC.js
@@ -316,7 +328,7 @@ function addText(channels, channel, user, type, time, text) {
       {
         "type": type,
         "time": time,
-        "text": text
+        "text": messageParser.parse(text)
       }
     );
   } else { // Sinon si c'est le tout premier message ou que l'user ne concorde pas avec le dernier ayant dit quelque chose
