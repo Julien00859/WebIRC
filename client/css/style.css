@@ -258,3 +258,23 @@ a:hover {
 .optionsIRC div {
   line-height: 30px;
 }
+#smileyButton { /* Bouton permettant d'afficher les smileys */
+  float: right;
+  border: none;
+  background: white;
+  text-decoration: none;
+}
+#smileyIcon  { /* Icone du bouton permettant d'afficher les smileys */
+  width:30px;
+  height:30px;
+  position: relative;
+  top: 1.5px;
+}
+#smiley { /* table des smileys */
+  float: right;
+  position: relative;
+  bottom: 10px;
+  background: white;
+  border-radius: 5px;
+  padding: 0 5px 10px;
+}

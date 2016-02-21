@@ -1,10 +1,15 @@
 .sprites {
 	display: inline-block;
-	width: 20px;
-	height: 20px;
+	width: 18px;
+	height: 18px;
 	background-image: url("../img/smiley.png");
   position: relative;
   top: 5px;
+	margin: 1px;
+}
+
+.sprites:hover {
+	transform: scale(1.2);
 }
 
 .sprites.smile {background-position: 0 0;}

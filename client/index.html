@@ -81,10 +81,8 @@
 
 			<form ng-submit="sendMessage($event);" ng-show="me.connected">
 				<fieldset class="inputText">
-					<textarea id=messagesubmittextarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
-					<button ng-click="showSmileys()"><img ng-src="img/smiley_icon.png" alt=smileys></button><!-- Affiche les smileys lors du click-->
-					<table id="smiley" ng-show="smileys"> <!-- Smileys -->
-						<caption>Liste des smileys disponible</caption>
+					<table id="smiley" ng-show="smileys" class="animated fadeIn"> <!-- Smileys -->
+						<!--<caption>Liste des smileys disponible</caption>-->
 						<tr>
 							<td class="sprites smile"></td>
 							<td class="sprites sad"></td>
@@ -189,6 +187,9 @@
 							<td class="sprites poolparty"></td>
 						</tr>
 					</table>
+					<textarea id=messagesubmittextarea ng-model="message" placeholder="Entrez votre message" ng-keypress="($event.which === 13)?sendMessage($event):0;"></textarea>
+					<button id=smileyButton ng-click="showSmileys()"><img id=smileyIcon ng-src="img/smiley_icon.png" alt=smileys></button><!-- Affiche les smileys lors du click-->
+
 					<input type=submit>
 				</fieldset>
 			</form>
