@@ -324,8 +324,8 @@ function onMode(sender, channel, mode, target) {
 function onNick(sender, newNick) {
   var scope = angular.element(document.body).scope(); // On récupère le $scope d'Angular
   Object.keys(scope.channels).forEach(function(channel){
-    var i = channel.users.indexOf(sender);
-    if (i >= 0) channel.users[i] = newNick;
+    var i = scope.channels[channel].users.indexOf(sender);
+    if (i >= 0) scope.channels[channel].users[i] = newNick;
   })
 }
 
@@ -336,7 +336,7 @@ function addText(channels, channel, user, type, time, text) {
       {
         "type": type,
         "time": time,
-        "text": messageParser.parse(text)
+        "text": type !== "raw" ? messageParser.parse(text) : text
       }
     );
   } else { // Sinon si c'est le tout premier message ou que l'user ne concorde pas avec le dernier ayant dit quelque chose
@@ -347,7 +347,7 @@ function addText(channels, channel, user, type, time, text) {
           {
             "type": type,
             "time": time,
-            "text": messageParser.parse(text)
+            "text": type !== "raw" ? messageParser.parse(text) : text
           }
         ]
       }
