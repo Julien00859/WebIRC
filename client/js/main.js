@@ -37,7 +37,7 @@ chatIrc.controller("fieldsController", function($scope, $sce, $interval) {
 
   $scope.kick = function kick(user, permLevelNeeded) {
     if ($scope.canIDoIt($scope.currentChannel, permLevelNeeded)) {
-      $scope.irc.sendCommand("KICK " + $scope.currentChannel + " " + user + " :Kicked");
+      $scope.irc.sendCommand("KICK " + $scope.currentChannel + " " + $scope.getRawUsername(user) + " :Kicked");
     }
   }
 
