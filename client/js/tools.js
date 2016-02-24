@@ -15,10 +15,6 @@ jQuery.fn.removeAttributes = function() {
 // Espace all regexp's special character
 // Source: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 RegExp.escape = function escape(str){
-  return str.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
-}
-
-// Check if the value given is in the list
-Array.prototype.contains = function contains(value) {
-  return this.indexOf(value) >= 0;
+  if(typeof str == "string") return str.replace(/([.*+?^${}()|\[\]\/\\])/g, "\\$1");
+  else return str;
 }
